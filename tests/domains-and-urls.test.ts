@@ -110,6 +110,12 @@ describe('url safety', () => {
     'http://[2001:db8::1]/',
     'http://[fec0::1]/',
     'http://[ff02::1]/',
+    // Other well-known local names (pre-launch audit N7).
+    'http://localhost.localdomain/',
+    'http://nas.home/',
+    'http://wiki.corp/',
+    'http://portal.intranet/',
+    'http://box.private/',
   ])('rejects %s', (u) => expect(isSafePublicHttpUrl(u)).toBe(false));
 });
 

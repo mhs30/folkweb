@@ -6,7 +6,7 @@ import { LIMITS } from './constants';
  * extension navigates to it or fetches it.
  */
 
-const BLOCKED_HOST_SUFFIXES = ['.localhost', '.local', '.internal', '.home.arpa', '.lan'];
+const BLOCKED_HOST_SUFFIXES = ['.localhost', '.local', '.localdomain', '.internal', '.intranet', '.home.arpa', '.home', '.lan', '.corp', '.private'];
 
 function isPrivateIPv4(host: string): boolean {
   const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);

@@ -147,15 +147,19 @@ export function parseFilterList(text: string): ParsedFilters {
   return { rules, errors, ignoredNetworkRules };
 }
 
+// What may follow an entity like "google.": a top-level domain (google.de, google.cat, an IDN
+// TLD) or a country's second level (google.co.uk, google.com.au). Not "google.evil.example".
+const ENTITY_SUFFIX = /^(?:[a-z]{2,}|xn--[a-z0-9-]+|(?:co|com|org|net|gov|edu|ac|or|ne|go|gob|mil|nic)\.[a-z]{2})$/;
+
 /** Does `host` fall under the domain token (`example.com` or entity `google.*`)? */
 export function hostMatchesToken(host: string, token: string): boolean {
-  const h = host.toLowerCase();
+  const h = host.toLowerCase().replace(/\.$/, '');
   if (token.endsWith('.*')) {
     const entity = token.slice(0, -2) + '.';
-    // Match at a label boundary: "google." at start or after a dot, followed by a TLD-ish suffix.
+    // Match at a label boundary: "google." at start or after a dot, followed by a TLD-like suffix.
     let idx = h.indexOf(entity);
     while (idx >= 0) {
-      if ((idx === 0 || h[idx - 1] === '.') && h.length > idx + entity.length) return true;
+      if ((idx === 0 || h[idx - 1] === '.') && ENTITY_SUFFIX.test(h.slice(idx + entity.length))) return true;
       idx = h.indexOf(entity, idx + 1);
     }
     return false;

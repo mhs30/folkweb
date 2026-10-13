@@ -89,6 +89,15 @@ describe('host matching', () => {
     expect(hostMatchesToken('google.', 'google.*')).toBe(false);
   });
 
+  it('entity tokens never match lookalike hosts (pre-launch audit N5)', () => {
+    for (const ok of ['google.de', 'google.cat', 'www.google.com.au', 'google.co.jp', 'amazon.co.uk', 'amazon.com.mx', 'google.xn--p1ai']) {
+      expect(hostMatchesToken(ok, ok.includes('amazon') ? 'amazon.*' : 'google.*'), ok).toBe(true);
+    }
+    for (const bad of ['google.evil.example', 'www.google.evil.example', 'google.com.evil.example', 'google.co.uk.attacker.net', 'google.evil-site.com']) {
+      expect(hostMatchesToken(bad, 'google.*'), bad).toBe(false);
+    }
+  });
+
   it('rulesForHost applies include/exclude and splits text rules', () => {
     const { rules } = parseFilterList('a.com,~shop.a.com##.x\n##.generic\na.com##div:has-text(Ad)');
     expect(rulesForHost(rules, 'www.a.com')).toEqual({ selectors: ['.x', '.generic'], textRules: [{ selector: 'div', text: 'ad' }] });
