@@ -22,12 +22,13 @@
     "lint:lists": "vitest run tests/lists.test.ts",
     "security": "node scripts/security-scan.mjs",
     "check": "npm run compile && npm run lint && npm run test && npm run build && npm run test:e2e && npm run lint:firefox && npm run security",
-    "lint:firefox": "npm run build:firefox && npx --yes web-ext@10.5.0 lint -s .output/firefox-mv3 --self-hosted",
+    "lint:firefox": "npm run build:firefox && addons-linter --self-hosted .output/firefox-mv3",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.63.0",
+    "addons-linter": "10.13.0",
     "eslint": "10.12.0",
     "eslint-plugin-no-unsanitized": "4.1.5",
     "globals": "17.13.0",
