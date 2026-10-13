@@ -86,6 +86,11 @@ describe('human.json parsing', () => {
     expect(claimFitsSpace(claim('https://example.com'), 'https://example.com/post', 'https://example.com/assets/human.json')).toBe(true);
     // A bare "~" is not a person's space.
     expect(claimFitsSpace(claim('https://example.com'), 'https://example.com/~/x', 'https://example.com/human.json')).toBe(true);
+    // Empty or "." segments reach the same folder on most servers (pre-launch audit N1).
+    expect(claimFitsSpace(claim(host), `${host}//~mallory/`, `${host}//~mallory/human.json`)).toBe(false);
+    expect(claimFitsSpace(claim(host), `${host}/`, `${host}//~mallory/human.json`)).toBe(false); // page faked with history.replaceState
+    expect(claimFitsSpace(claim(host), `${host}/./~mallory/`, `${host}/.//~mallory/human.json`)).toBe(false);
+    expect(claimFitsSpace(claim(host), `${host}///%7Emallory/x`, `${host}/human.json`)).toBe(false);
   });
 });
 

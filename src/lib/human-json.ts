@@ -95,7 +95,8 @@ function tildeSpace(url: string): string | null {
   } catch {
     return null;
   }
-  const segment = u.pathname.split('/')[1] ?? '';
+  // The first real segment: "//~mallory/" and "/./~mallory/" reach the same folder on most servers.
+  const segment = u.pathname.split('/').find((s) => s !== '' && s !== '.') ?? '';
   let decoded: string;
   try {
     decoded = decodeURIComponent(segment);
