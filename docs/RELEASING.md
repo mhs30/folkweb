@@ -5,16 +5,22 @@ browser stores **by a maintainer, by hand**. Agents and CI never publish to a st
 
 ## What the pipeline does
 
-`.github/workflows/release.yml` runs when a maintainer pushes a tag like `v0.2.0`:
+`.github/workflows/release.yml` runs when a maintainer pushes a tag like `v0.2.0`. It has two
+jobs, so the build toolchain never holds a token that can write to the repository.
 
-1. Checks the tag matches `package.json`'s version.
+**build** (read-only token, clean install with no dependency cache):
+
+1. Checks the tag matches `package.json`'s version, and takes the release notes from `CHANGELOG.md` (`scripts/release-notes.mjs`).
 2. Installs with `npm ci` (install scripts disabled) and runs the full `npm run check`: types, lint, unit tests, builds, browser smoke tests, Firefox lint and the security scan, plus `npm audit`.
-3. Builds the store packages: `folkweb-X.Y.Z-chrome.zip`, `folkweb-X.Y.Z-firefox.zip` and `folkweb-X.Y.Z-sources.zip` (the source code Mozilla's reviewers need).
-4. Writes `SHA256SUMS.txt` and signs **build provenance** for every zip (Sigstore, via GitHub attestations).
-5. Creates a **draft** GitHub release with the notes from `CHANGELOG.md` (`scripts/release-notes.mjs`).
+3. Builds the store packages: `folkweb-X.Y.Z-chrome.zip`, `folkweb-X.Y.Z-firefox.zip` and `folkweb-X.Y.Z-sources.zip` (the source code Mozilla's reviewers need), and writes `SHA256SUMS.txt`.
 
-A maintainer approves the release, checks the files, uploads them to Firefox Add-ons, Edge
-Add-ons and the Chrome Web Store, and publishes the GitHub release.
+**publish** (waits for a maintainer to approve the `release` environment; runs no repository code or dependencies):
+
+4. Checks the downloaded files against `SHA256SUMS.txt` and signs **build provenance** for every zip (Sigstore, via GitHub attestations).
+5. Creates a **draft** GitHub release with those files and notes.
+
+The maintainer then checks the files, uploads them to Firefox Add-ons, Edge Add-ons and the
+Chrome Web Store, and publishes the GitHub release.
 
 ## Verify a release yourself
 

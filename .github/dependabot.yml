@@ -10,6 +10,10 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
+    ignore:
+      # typescript-eslint supports typescript >=4.8.4 <6.1.0. Remove when it supports newer versions.
+      - dependency-name: typescript
+        versions: ['>=6.1.0']
     groups:
       dev-tooling:
         dependency-type: development
