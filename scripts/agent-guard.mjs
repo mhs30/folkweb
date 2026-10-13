@@ -35,11 +35,15 @@ const toolInput = payload.tool_input ?? payload.toolInput ?? payload.input ?? {}
 const text = typeof toolInput === 'string' ? toolInput : JSON.stringify(toolInput);
 // Paths are matched lower-case: macOS and Windows file systems ignore case (Wxt.config.ts is wxt.config.ts).
 const norm = text.replace(/\\\\/g, '/').replace(/\\/g, '/').toLowerCase();
-// Shell rules match the raw command line, not its JSON encoding.
+// Shell rules match the raw command line, not its JSON encoding. Git's global options
+// (`git -C dir -c k=v push`) are dropped first, so rules see `git push`.
 const rawCommand = typeof toolInput?.command === 'string' ? toolInput.command : typeof toolInput?.cmd === 'string' ? toolInput.cmd : text;
-const command = rawCommand.toLowerCase();
-// Path arguments (view, grep, edit, create…): not file contents or search patterns.
-const pathArgs = ['path', 'file_path', 'filePath', 'paths', 'filePaths', 'directory', 'source', 'destination']
+const GIT_GLOBAL_OPTIONS = /\bgit((?:\s+(?:-c|--git-dir|--work-tree|--namespace|--exec-path|--config-env)(?:=\S+|\s+\S+)|\s+--[a-z][\w-]*|\s+-[a-z]+))+\s+(?=[a-z])/g;
+const command = rawCommand.toLowerCase().replace(GIT_GLOBAL_OPTIONS, 'git ');
+// Path arguments (view, grep, glob, edit, create…): not file contents or search patterns.
+const pathKeys = ['path', 'file_path', 'filePath', 'paths', 'filePaths', 'directory', 'source', 'destination', 'glob'];
+if (/glob|find/i.test(toolName)) pathKeys.push('pattern');
+const pathArgs = pathKeys
   .flatMap((k) => [toolInput?.[k]].flat())
   .filter((v) => typeof v === 'string')
   .join(' ')
@@ -48,12 +52,15 @@ const pathArgs = ['path', 'file_path', 'filePath', 'paths', 'filePaths', 'direct
 
 const isShell = /bash|shell|terminal|exec|run_?command|command/i.test(toolName);
 const isWrite = /edit|write|create|replace|patch|insert|delete|move|rename|multi/i.test(toolName);
+// Tools (e.g. MCP) that change GitHub directly instead of the working tree: a write verb on a GitHub object.
+const isGitHubWrite =
+  /merge_pull_request|push_files|create_or_update_file|(merge|push|update|delete|fork|rerun|cancel|run|dismiss)_?(files?|release|ref|repo|repository|workflow|secret|ruleset|branch|tag)|create_?(release|ref|repo|repository|secret|ruleset|branch|tag)/i.test(toolName);
 
 // Paths may appear after "/", whitespace, quotes or "=" (JSON payloads and shell commands).
 const B = String.raw`(?:^|[\/\s'"=:<>])`;
-const E = String.raw`(?:$|[\s'";|&)>])`;
+const E = String.raw`(?:$|[\s'";|&)>*])`;
 const P = (body) => new RegExp(B + body);
-const SECRET_PATH = P(String.raw`(\.env(\.[\w-]+)?|id_rsa|id_ed25519|id_ecdsa|[\w-][\w.-]*\.(pem|key|p12|pfx))${E}`);
+const SECRET_PATH = P(String.raw`(\.env(\.[\w*-]+)?|id_rsa|id_ed25519|id_ecdsa|[\w*-][\w.*-]*\.(pem|key|p12|pfx))${E}`);
 
 const DENY_COMMANDS = [
   [/\bnpm\s+publish\b|\byarn\s+publish\b|\bpnpm\s+publish\b/, 'Publishing packages is done by maintainers only.'],
@@ -71,6 +78,11 @@ const DENY_COMMANDS = [
     'Changing repository visibility is done by a maintainer, by hand, never by an agent.',
   ],
   [/\bgo-public\.sh\b(?![^;&|]*--dry-run)/, 'ops/go-public.sh changes GitHub settings: a maintainer runs it (agents may use --dry-run).'],
+  // Releases and tags are made by maintainers only (docs/RELEASING.md).
+  [/\bgh\s+release\s+(create|upload|edit|delete)\b/, 'Releases are published by maintainers only.'],
+  [/\bgit\s+tag\b(?!\s*($|[;&|]|\s(-l|--list|-n\d*|--contains|--points-at)\b))/, 'Agents never create or change tags; releases start from a maintainer’s tag.'],
+  [/\bgit\s+push\b[^;&|]*(\s--tags\b|\s--follow-tags\b|refs\/tags\/|\sv\d+\.\d+)/, 'Agents never push tags; releases start from a maintainer’s tag.'],
+  [/\bgh\s+pr\s+merge\b[^;&|]*\s--admin\b/, 'Bypassing branch rules is forbidden.'],
 ];
 
 const ASK_COMMANDS = [
@@ -80,6 +92,11 @@ const ASK_COMMANDS = [
   [/\b(pnpm|yarn)\s+(add|dlx)\b|\bbunx\b/, 'Adding or running packages needs human approval (supply chain).'],
   [/\bgit\s+push\b/, 'Pushing needs human approval.'],
   [/\bnpm\s+audit\s+fix\b/, 'Dependency changes need human approval.'],
+  [
+    /\bgh\s+(pr\s+merge|workflow\s+(run|enable|disable)|run\s+(rerun|cancel|delete)|secret|variable|ruleset|cache\s+delete|label\s+(create|edit|delete)|repo\s+(delete|archive|unarchive|rename|transfer|sync|deploy-key))\b/,
+    'Changing things on GitHub needs human approval.',
+  ],
+  [/\bgh\s+api\b[^;&|]*(\s-x\s*(post|put|patch|delete)\b|\s--method[\s=]*(post|put|patch|delete)\b|\s(-f|--field|--raw-field|--input)\b)/, 'Writing through the GitHub API needs human approval.'],
 ];
 
 const DENY_PATHS = [[P(String.raw`\.env(\.[\w-]+)?${E}|\.(pem|key)${E}`), 'Agents must not write secret files.']];
@@ -94,10 +111,10 @@ const ASK_PATHS = [
   [P(String.raw`lists\/`), 'Curator list changes need human approval (docs/LIST-FORMAT.md).'],
 ];
 
-// Shell commands that can write files: redirects, in-place edits, file tools, git, patch, and
-// inline scripts (node -e, python -c, heredocs) that could write without naming a write tool.
+// Shell commands that can write files: redirects, in-place edits, file tools, git, patch, downloads,
+// archives, and inline scripts (node -e, python -c, heredocs) that could write without naming a write tool.
 const SHELL_WRITES =
-  /(>|\btee\b|\bsed\s+-i|\bperl\s+-[a-z]*[pie]|\b(mv|cp|rm|truncate|ln|install|dd|touch)\b|\bgit\s+(checkout|restore|rm|mv|apply|am|stash|reset)\b|\bpatch\b|\b(node|deno|bun)\s+(-e|--eval|-p|--print)\b|\b(python3?|ruby|perl)\s+(-[a-z]*[ce]|-\s)|<<)/;
+  /(>|\btee\b|\bsed\s+-i|\bperl\s+-[a-z]*[pie]|\b(mv|cp|rm|truncate|ln|install|dd|touch|chmod|rsync|unzip|cpio|wget)\b|\btar\s+[^;&|]*\b-?[a-z]*x|\bcurl\b[^;&|]*\s(-o|--output|--remote-name)\b|\bgit\s+(checkout|restore|rm|mv|apply|am|stash|reset)\b|\bpatch\b|\b(node|deno|bun)\s+(-e|--eval|-p|--print)\b|\b(python3?|ruby|perl)\s+(-[a-z]*[ce]|-\s)|<<)/;
 
 function decide() {
   if (isShell) {
@@ -108,6 +125,7 @@ function decide() {
     }
     return null;
   }
+  if (isGitHubWrite) return ['ask', 'Changing things on GitHub needs human approval.'];
   if (isWrite) {
     // Match the file being written, not its content. Tools without a path argument (patches)
     // are matched on their whole input, so they can't slip through.
