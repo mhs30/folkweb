@@ -57,7 +57,7 @@ export function revealElement(el: Element): boolean {
   if (!unhideElement(el)) return false;
   const html = el as HTMLElement;
   html.setAttribute(REVEALED_ATTR, '');
-  html.style.setProperty('outline', '2px dashed #c9a227', 'important');
+  html.style.setProperty('outline', '2px dashed #9a7a12', 'important');
   html.style.setProperty('outline-offset', '2px', 'important');
   return true;
 }

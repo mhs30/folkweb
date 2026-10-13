@@ -100,7 +100,7 @@ function searchPanel(tabId: number, s: PageSignals, settings: Settings): HTMLEle
 function render(tabId: number, s: PageSignals, settings: Settings, outdated: boolean): void {
   const theme = settings.theme;
   const items: HTMLLIElement[] = [...trustSignals(s)];
-  if (s.curated.boost) items.push(signal('★', `On a curator list you follow (${s.curated.boost}).`, 'fw-good'));
+  if (s.curated.boost) items.push(signal('★', `On Folkweb’s boost list or yours (${s.curated.boost}).`, 'fw-good'));
   if (s.curated.block) items.push(signal('⛔', `On your block list (${s.curated.block}).`, 'fw-warn'));
   for (const f of s.feeds) items.push(signal('📰', extLink(f.href, `Has a feed — ${f.title}`)));
   if (s.aiPolicy) items.push(signal('📄', extLink(s.aiPolicy, 'Publishes an /ai policy')));
@@ -221,13 +221,20 @@ async function wander(): Promise<void> {
 async function refresh(): Promise<void> {
   const [result, settings] = await Promise.all([getSignals(), loadSettings()]);
   if (!result) {
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    const tabId = tab?.id;
     mount(
       app,
-      h('section', { class: 'fw-panel' }, h('p', {}, 'Folkweb doesn’t run on this page (browser pages, stores and file URLs are off-limits). Try a regular website.')),
+      h(
+        'section',
+        { class: 'fw-panel' },
+        h('p', {}, 'Folkweb isn’t running on this page yet. If the page was open before you installed Folkweb, reload it. Browser pages, extension stores and files are always off-limits.'),
+      ),
       h(
         'section',
         { class: 'fw-actions', style: 'margin: 0 10px 6px' },
-        h('button', { class: 'fw-primary', on: { click: wander } }, '🎲 Wander'),
+        tabId === undefined ? null : h('button', { class: 'fw-primary', on: { click: () => void reloadTab(tabId) } }, '↻ Reload this page'),
+        h('button', { on: { click: wander } }, '🎲 Wander'),
         h('button', { on: { click: () => browser.runtime.openOptionsPage() } }, 'Settings'),
       ),
     );

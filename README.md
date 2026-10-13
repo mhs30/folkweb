@@ -17,7 +17,7 @@ trust, and quiets the noise in between.
 | | Feature | How |
 |---|---|---|
 | 🟢 | **Human signals** | Reads a site's [`human.json`](https://codeberg.org/robida/human.json): a site declares human authorship and vouches for other human sites. You choose seed sites you trust personally, and sites they vouch for show up as human-vouched. Also shows RSS/Atom feeds and `/ai` policy pages. |
-| ★ | **Curators, not algorithms** | Boost and block lists mark human-made sites in Google, DuckDuckGo and Bing results and hide content farms. Blocked sites get a calm stop page, and you can always continue. |
+| ★ | **Curators, not algorithms** | Folkweb's boost list and yours mark human-made sites in Google, DuckDuckGo and Bing results; sites on your block list are hidden there. Blocked sites get a calm stop page, and you can always continue. |
 | 🔎 | **Trusted sources in search** | Optional: fade or hide results that aren't from your boost lists or trust circle. A note above the results says how many were hidden and lets you show them all. |
 | 🔁 | **Share your lists** | Export your boosted, blocked and paused sites and your own filters as a file, import a friend's (checked like anything you type; unsafe rules are skipped), or create a `human.json` for your own website that vouches for the sites you boost. |
 | 🎲 | **Wander** | Jump to a random human-made site from your trust circle and curator lists. Like StumbleUpon, for the human web. |

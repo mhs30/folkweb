@@ -44,7 +44,7 @@ function containerFor(adapter: SearchAdapter, result: Element): Element {
 }
 
 // One generic title: page scripts can read it, so it must not reveal *why* a site is trusted.
-const BADGE_TITLE = 'A source you chose: on a list you follow or in your trust circle';
+const BADGE_TITLE = 'A source you trust: on Folkweb’s boost list, your own, or in your trust circle';
 
 function badge(): HTMLSpanElement {
   const el = document.createElement('span');
