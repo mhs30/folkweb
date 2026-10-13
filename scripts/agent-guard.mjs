@@ -64,7 +64,7 @@ const DENY_COMMANDS = [
   [/\bsudo\b/, 'sudo is forbidden.'],
   [/ignore-scripts\s*(=|\s)\s*false|--no-ignore-scripts|npm\s+config\s+set\s+ignore-scripts/, 'Install scripts must stay disabled (.npmrc).'],
   [SECRET_PATH, 'Reading or copying secrets is forbidden.'],
-  [/\b(printenv|env|export\s+-p|declare\s+-p|set|compgen\s+-v)\s*($|[;&|>])|process\.env(?![.[\w])/, 'Dumping environment variables is forbidden.'],
+  [/\b(printenv|env|export\s+-p|declare\s+-p|set|compgen\s+-v)\s*($|[;&|>])|\b(node|deno|bun)\b[^;&|]*\s(-e|-p|--eval|--print)\b[^;&|]*process\.env(?![.[\w])/, 'Dumping environment variables is forbidden.'],
 ];
 
 const ASK_COMMANDS = [

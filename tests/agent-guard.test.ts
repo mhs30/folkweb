@@ -101,7 +101,7 @@ describe('agent guard hook', () => {
 
     it.each(['.env', 'config/.env.production', 'certs/server.pem'])('denies reading secret %s with a read tool', (p) => expect(decide(read(p))).toBe('deny'));
 
-    it.each(['export -p', 'set', 'declare -p | head', 'node -p process.env', 'compgen -v'])('denies dumping the environment: %s', (cmd) =>
+    it.each(['export -p', 'set', 'declare -p | head', 'node -p process.env', 'node -e "console.log(process.env)"', 'compgen -v'])('denies dumping the environment: %s', (cmd) =>
       expect(decide(shell(cmd))).toBe('deny'),
     );
 
@@ -131,7 +131,7 @@ describe('agent guard hook', () => {
       expect(decide(patch)).toBe('ask');
     });
 
-    it.each(['npx vitest run', 'npx tsc --noEmit', 'grep -rn "process.env.NODE_ENV" src', "gh api x --jq '.data.key'", 'git push -u origin fix/sponsored-labels', 'cat .gitignore', 'echo settings'])(
+    it.each(['npx vitest run', 'npx tsc --noEmit', 'grep -rn "process.env.NODE_ENV" src', 'grep -rn process.env src', "gh api x --jq '.data.key'", 'git push -u origin fix/sponsored-labels', 'cat .gitignore', 'echo settings'])(
       'still allows everyday commands: %s',
       (cmd) => expect(decide(shell(cmd))).not.toBe('deny'),
     );
