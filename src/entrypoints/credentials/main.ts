@@ -1,6 +1,6 @@
 import initC2pa, { WasmReader } from '@contentauth/c2pa-wasm';
 import { browser } from 'wxt/browser';
-import { summarizeManifestStore, VERDICT_TEXT, type C2paSummary } from '../../lib/c2pa-summary';
+import { headlineFor, summarizeManifestStore, type C2paSummary } from '../../lib/c2pa-summary';
 import { LIMITS } from '../../lib/constants';
 import { parseSafeUrl, safeFetch } from '../../lib/url-safety';
 import { extLink, h, mount } from '../../ui/dom';
@@ -33,16 +33,16 @@ function showError(text: string): void {
 }
 
 function renderSummary(summary: C2paSummary, previewUrl: string | null): void {
-  const v = VERDICT_TEXT[summary.verdict];
+  const v = headlineFor(summary);
   const preview = previewUrl ? h('img', { class: 'fw-preview', alt: '' }) : null;
   if (preview && previewUrl) preview.src = previewUrl;
 
   const rows: Array<[string, string | null]> = [
     ['Validation', summary.verdict === 'none' ? null : VALIDATION_TEXT[summary.validation]],
-    ['Signed by', summary.signer],
+    [v.signerLabel, summary.signer],
     ['Made with', summary.generator],
     ['Signed at', summary.signedAt],
-    ['Source type', summary.sourceTypes.join(', ') || null],
+    ['Declared source type', summary.sourceTypes.join(', ') || null],
     ['Actions', summary.actions.join(', ') || null],
     ['Ingredients', summary.ingredientCount ? String(summary.ingredientCount) : null],
   ];
