@@ -86,3 +86,33 @@ export function parseHumanJsonText(text: string): HumanJsonResult {
 export function claimCoversPage(doc: HumanJson, pageUrl: string): boolean {
   return isUnderScope(pageUrl, doc.url);
 }
+
+/** The `https://host/~name` space a URL sits in on a shared host, or null. */
+function tildeSpace(url: string): string | null {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return null;
+  }
+  const segment = u.pathname.split('/')[1] ?? '';
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(segment);
+  } catch {
+    decoded = segment.replace(/^%7e/i, '~'); // fail closed on malformed escapes
+  }
+  return decoded.startsWith('~') && decoded.length > 1 ? normalizeHumanUrl(`${u.origin}/${segment}`) : null;
+}
+
+/**
+ * On shared hosts people publish under `/~name`. A human.json read on such a page, or stored
+ * in such a space, may only claim that space: `/~mallory/human.json` can't claim the whole host.
+ * (The spec lets the file live anywhere, so ordinary sites aren't held to the file's folder.)
+ */
+export function claimFitsSpace(doc: HumanJson, pageUrl: string, documentUrl: string): boolean {
+  for (const space of [tildeSpace(pageUrl), tildeSpace(documentUrl)]) {
+    if (space && !isUnderScope(doc.url, space)) return false;
+  }
+  return true;
+}

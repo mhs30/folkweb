@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { claimCoversPage, isUnderScope, normalizeHumanUrl, parseHumanJson, parseHumanJsonText } from '../src/lib/human-json';
+import { claimCoversPage, claimFitsSpace, isUnderScope, normalizeHumanUrl, parseHumanJson, parseHumanJsonText } from '../src/lib/human-json';
 import { addSeed, EMPTY_TRUST, evaluateTrust, removeSeed, sanitizeTrust, wanderPool } from '../src/lib/trust';
 
 const alice = {
@@ -60,6 +60,32 @@ describe('human.json parsing', () => {
     if (!r.ok) throw new Error('expected ok');
     expect(claimCoversPage(r.doc, 'https://attacker.example/page')).toBe(false);
     expect(claimCoversPage(r.doc, 'https://victim.example/page')).toBe(true);
+  });
+
+  it('on shared hosts a ~name space can only claim itself (audit finding #9)', () => {
+    const claim = (url: string) => {
+      const r = parseHumanJson({ version: '0.1.1', url });
+      if (!r.ok) throw new Error('expected ok');
+      return r.doc;
+    };
+    const host = 'https://uni.example';
+    // Mallory's page and file claim the whole host: refused.
+    expect(claimFitsSpace(claim(host), `${host}/~mallory/`, `${host}/~mallory/human.json`)).toBe(false);
+    // Same claim with the file outside the space but read on Mallory's page: refused.
+    expect(claimFitsSpace(claim(host), `${host}/~mallory/post`, `${host}/human.json`)).toBe(false);
+    // Encoded tilde is still a tilde space, also with a malformed escape after it.
+    expect(claimFitsSpace(claim(host), `${host}/%7Emallory/`, `${host}/%7Emallory/human.json`)).toBe(false);
+    expect(claimFitsSpace(claim(host), `${host}/~mallory%ZZ/`, `${host}/human.json`)).toBe(false);
+    expect(claimFitsSpace(claim(host), `${host}/%7Emallory%E0/`, `${host}/human.json`)).toBe(false);
+    // Another person's space: refused.
+    expect(claimFitsSpace(claim(`${host}/~alice`), `${host}/~mallory/`, `${host}/~mallory/human.json`)).toBe(false);
+    // Alice claims her own space, or a part of it: fine.
+    expect(claimFitsSpace(claim(`${host}/~alice`), `${host}/~alice/blog`, `${host}/~alice/human.json`)).toBe(true);
+    expect(claimFitsSpace(claim(`${host}/~alice/blog`), `${host}/~alice/blog/post`, `${host}/~alice/human.json`)).toBe(true);
+    // Ordinary sites may keep the file anywhere (the spec allows it) and claim the whole site.
+    expect(claimFitsSpace(claim('https://example.com'), 'https://example.com/post', 'https://example.com/assets/human.json')).toBe(true);
+    // A bare "~" is not a person's space.
+    expect(claimFitsSpace(claim('https://example.com'), 'https://example.com/~/x', 'https://example.com/human.json')).toBe(true);
   });
 });
 

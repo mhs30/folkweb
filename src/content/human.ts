@@ -1,5 +1,5 @@
 import { LIMITS } from '../lib/constants';
-import { claimCoversPage, parseHumanJsonText } from '../lib/human-json';
+import { claimCoversPage, claimFitsSpace, parseHumanJsonText } from '../lib/human-json';
 import type { HumanJsonStatus } from '../lib/messages';
 import { parseSafeUrl, safeFetch } from '../lib/url-safety';
 
@@ -16,10 +16,12 @@ export async function discoverHumanJson(): Promise<HumanJsonStatus> {
   if (url.origin !== location.origin) return { status: 'cross-origin', href: url.href };
 
   try {
-    const { bytes } = await safeFetch(url.href, { maxBytes: LIMITS.humanJsonBytes, accept: 'application/json', redirects: 'refuse' });
+    const { bytes, finalUrl } = await safeFetch(url.href, { maxBytes: LIMITS.humanJsonBytes, accept: 'application/json', redirects: 'refuse' });
+    // Same origin only (SECURITY.md). Redirects are refused; checked again in case that ever changes.
+    if (new URL(finalUrl).origin !== location.origin) return { status: 'invalid', href: url.href, reason: 'redirected to another site' };
     const parsed = parseHumanJsonText(new TextDecoder().decode(bytes));
     if (!parsed.ok) return { status: 'invalid', href: url.href, reason: parsed.reason };
-    if (!claimCoversPage(parsed.doc, location.href)) {
+    if (!claimCoversPage(parsed.doc, location.href) || !claimFitsSpace(parsed.doc, location.href, finalUrl)) {
       return { status: 'out-of-scope', href: url.href, declared: parsed.doc.url };
     }
     return { status: 'found', href: url.href, doc: parsed.doc };
