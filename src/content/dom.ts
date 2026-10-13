@@ -11,18 +11,23 @@ const reasons = new WeakMap<Element, HideReason>();
 const hiddenByUs = new WeakSet<HTMLElement>();
 const priorDisplay = new WeakMap<HTMLElement, { value: string; priority: string }>();
 
-export function upsertStyle(id: string, css: string): void {
-  let el = document.getElementById(id);
+// Folkweb's own <style> elements, held here in the isolated world instead of looked up by
+// id: a page could plant an element with the same id to swallow or replace our CSS.
+const styles = new Map<string, HTMLStyleElement>();
+
+export function upsertStyle(key: string, css: string): void {
+  let el = styles.get(key);
   if (!el) {
     el = document.createElement('style');
-    el.id = id;
-    (document.head ?? document.documentElement).appendChild(el);
+    styles.set(key, el);
   }
+  if (!el.isConnected) (document.head ?? document.documentElement).appendChild(el);
   if (el.textContent !== css) el.textContent = css;
 }
 
-export function removeStyle(id: string): void {
-  document.getElementById(id)?.remove();
+export function removeStyle(key: string): void {
+  styles.get(key)?.remove();
+  styles.delete(key);
 }
 
 /** Hide via CSSOM so it works even when page CSP blocks inline <style>. Records why, for the popup report. */

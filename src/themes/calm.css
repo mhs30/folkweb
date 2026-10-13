@@ -20,16 +20,3 @@ html[data-folkweb-calm~="still"] marquee {
 html[data-folkweb-calm~="gray"] {
   filter: grayscale(1) !important;
 }
-
-[data-folkweb-badge] {
-  display: inline-block !important;
-  margin: 0 6px 0 0 !important;
-  padding: 0 7px !important;
-  border: 1px solid #f3c4ad !important;
-  border-radius: 999px !important;
-  background: #fff1e9 !important;
-  color: #8a2f12 !important;
-  font: 600 11px/17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
-  vertical-align: middle !important;
-  text-decoration: none !important;
-}

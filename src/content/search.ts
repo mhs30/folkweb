@@ -7,7 +7,19 @@ const DONE_ATTR = 'data-folkweb-seen';
 export const FADE_ATTR = 'data-folkweb-faded';
 const STYLE_ID = 'folkweb-search';
 const SEARCH_CSS = `[${FADE_ATTR}] { opacity: 0.45 !important; }
-[${FADE_ATTR}]:hover, [${FADE_ATTR}]:focus-within { opacity: 1 !important; }`;
+[${FADE_ATTR}]:hover, [${FADE_ATTR}]:focus-within { opacity: 1 !important; }
+[data-folkweb-badge] {
+  display: inline-block !important;
+  margin: 0 6px 0 0 !important;
+  padding: 0 7px !important;
+  border: 1px solid #f3c4ad !important;
+  border-radius: 999px !important;
+  background: #fff1e9 !important;
+  color: #8a2f12 !important;
+  font: 600 11px/17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
+  vertical-align: middle !important;
+  text-decoration: none !important;
+}`;
 
 export interface SearchContext {
   adapter: SearchAdapter;
