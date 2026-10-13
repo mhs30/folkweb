@@ -37,6 +37,11 @@ Rules for **bundled** lists, enforced by the lint:
 One domain per line. Comments start with `#`. Subdomains are included automatically.
 `||example.com^` and `*.example.com` are accepted for compatibility.
 
+Because an entry covers every subdomain, a boost entry vouches for everything under it.
+Platforms where anyone can get a subdomain (`neocities.org`, `github.io`, `wordpress.com`…)
+or that replay other sites (`web.archive.org`) can't be boosted whole: boost the person's
+own site (`alice.neocities.org`) instead. `npm run lint:lists` refuses known platforms.
+
 ```text
 # Title: Folkweb — Example
 example.com          # optional trailing note
