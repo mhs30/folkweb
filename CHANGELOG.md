@@ -10,7 +10,7 @@ Not released to any store yet. Planned as **0.2.0**, the first public release.
 
 ### Added
 - **Human signals:** reads a site's `human.json`, lets you trust sites and see the sites they vouch for; shows feeds and `/ai` pages.
-- **Curators, not algorithms:** boost and block lists for Google, DuckDuckGo and Bing results, a ★ folk badge on trusted results, and a calm stop page for blocked sites. The boost list has 29 evidence-backed entries.
+- **Curators, not algorithms:** boost and block lists for Google, DuckDuckGo and Bing results, a ★ folk badge on trusted results, and a calm stop page for blocked sites. The boost list has 27 evidence-backed entries.
 - **Trusted sources in search:** show all, fade other sources, or show only trusted sources, with an in-page note and "Show all here".
 - **Declutter, your way:** hides AI panels, AI summaries and sponsored modules you didn't ask for, each one a setting. Google opens as plain web results.
 - **"Hidden on this page":** the popup lists what was hidden and why, and can show it all again with an outline.

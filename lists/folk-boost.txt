@@ -4,6 +4,9 @@
 # Policy: see docs/LIST-FORMAT.md#curation-policy — a site is added when it is
 #         primarily run by people (not a content farm), has no AI-generated
 #         filler, and the PR states who vouches for it and why.
+# An entry also boosts all its subdomains, so platforms where anyone gets a
+# subdomain (neocities.org, github.io…) or that replay other sites
+# (web.archive.org) can't be listed whole: boost the person's own site instead.
 
 indieweb.org          # IndieWeb community wiki
 marginalia.nu         # Marginalia search — independent small-web search engine
@@ -14,7 +17,6 @@ ooh.directory         # Human-curated blog directory
 personalsit.es        # Personal sites directory
 blogroll.org          # Human-curated blogrolls
 slashpages.net        # /about, /now, /ai… pages for personal sites
-neocities.org         # Free hosting for handmade sites
 wiby.me               # Search engine for the classic web
 webring.xxiivv.com    # Merveilles webring
 indieblog.page        # Random IndieWeb blog post
@@ -34,7 +36,6 @@ yesterweb.org         # Community about reclaiming the personal web (since 2021)
 
 # --- Added 2026-10-12 (large human-edited references; evidence in the PR) ---
 wikipedia.org         # Encyclopedia written by volunteer editors; community rules against unreviewed AI-generated text
-archive.org           # Internet Archive: nonprofit library and the Wayback Machine
 gutenberg.org         # Project Gutenberg: public-domain books digitised and proofread by volunteers (since 1971)
 openstreetmap.org     # Map of the world made by volunteer mappers
 developer.mozilla.org # MDN Web Docs: web documentation written and reviewed by people

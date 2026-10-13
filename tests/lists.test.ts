@@ -56,4 +56,17 @@ describe('bundled lists', () => {
       expect(text).toMatch(/^# Title: Folkweb — /m);
     });
   });
+
+  it('boosts no platform whose subdomains belong to other people (curation policy)', () => {
+    // An entry covers every subdomain, so these would put ★ on anyone's site or on replays of any site.
+    const PLATFORMS = [
+      'neocities.org', 'github.io', 'gitlab.io', 'codeberg.page', 'pages.dev', 'netlify.app', 'vercel.app',
+      'wordpress.com', 'blogspot.com', 'tumblr.com', 'substack.com', 'medium.com', 'bearblog.dev',
+      'micro.blog', 'mataroa.blog', 'write.as', 'carrd.co', 'glitch.me', 'archive.org', 'archive.today', 'archive.ph',
+    ];
+    const boost = parseDomainList(readFileSync(join(LIST_DIR, 'folk-boost.txt'), 'utf8')).domains;
+    for (const platform of PLATFORMS) {
+      expect([...boost].filter((d) => d === platform || platform.endsWith(`.${d}`)), platform).toEqual([]);
+    }
+  });
 });
