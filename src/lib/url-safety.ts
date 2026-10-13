@@ -11,7 +11,7 @@ const BLOCKED_HOST_SUFFIXES = ['.localhost', '.local', '.internal', '.home.arpa'
 function isPrivateIPv4(host: string): boolean {
   const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
   if (!m) return false;
-  const [a, b] = [Number(m[1]), Number(m[2])];
+  const [a, b, c] = [Number(m[1]), Number(m[2]), Number(m[3])];
   return (
     a === 0 ||
     a === 10 ||
@@ -19,19 +19,46 @@ function isPrivateIPv4(host: string): boolean {
     (a === 100 && b >= 64 && b <= 127) ||
     (a === 169 && b === 254) ||
     (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 0 && (c === 0 || c === 2)) || // IETF protocol assignments, TEST-NET-1
+    (a === 192 && b === 88 && c === 99) || // 6to4 relay anycast
     (a === 192 && b === 168) ||
     (a === 198 && (b === 18 || b === 19)) ||
+    (a === 198 && b === 51 && c === 100) || // TEST-NET-2
+    (a === 203 && b === 0 && c === 113) || // TEST-NET-3
     a >= 224
   );
 }
 
+/** The eight 16-bit groups of a serialized IPv6 address (as the URL parser writes it), or null. */
+function ipv6Groups(h: string): number[] | null {
+  const halves = h.split('::');
+  if (halves.length > 2) return null;
+  const part = (s: string) => (s ? s.split(':') : []);
+  const head = part(halves[0] ?? '');
+  const tail = part(halves[1] ?? '');
+  const fill = halves.length === 2 ? 8 - head.length - tail.length : 0;
+  if (fill < 0 || (halves.length === 1 && head.length !== 8)) return null;
+  const groups = [...head, ...Array<string>(fill).fill('0'), ...tail];
+  if (groups.length !== 8 || !groups.every((g) => /^[0-9a-f]{1,4}$/.test(g))) return null;
+  return groups.map((g) => parseInt(g, 16));
+}
+
+/**
+ * IPv6 literals are allowed only in global unicast space (2000::/3), minus ranges that
+ * embed IPv4 addresses or are reserved. Everything else (loopback, unspecified,
+ * IPv4-mapped and -compatible, NAT64, unique local, link- and site-local, multicast) is
+ * outside 2000::/3 and refused.
+ */
 function isPrivateIPv6(host: string): boolean {
   if (!host.startsWith('[')) return false;
-  const h = host.slice(1, -1).toLowerCase();
-  if (h === '::' || h === '::1') return true;
-  if (h.startsWith('fc') || h.startsWith('fd')) return true; // unique local fc00::/7
-  if (/^fe[89ab]/.test(h)) return true; // link-local fe80::/10
-  if (h.startsWith('::ffff:')) return true; // IPv4-mapped: refuse rather than parse
+  const g = ipv6Groups(host.slice(1, -1).toLowerCase());
+  if (!g) return true;
+  const [g0 = 0, g1 = 0] = g;
+  if ((g0 & 0xe000) !== 0x2000) return true; // not 2000::/3
+  if (g0 === 0x2002) return true; // 6to4 (embeds IPv4)
+  if (g0 === 0x2001 && g1 === 0x0000) return true; // Teredo (embeds IPv4)
+  if (g0 === 0x2001 && g1 === 0x0db8) return true; // documentation
+  if (g0 === 0x2001 && g1 < 0x0200) return true; // IETF protocol assignments 2001::/23
   return false;
 }
 
@@ -45,8 +72,9 @@ export function isSafePublicHttpUrl(input: string | URL): boolean {
   }
   if (url.protocol !== 'https:' && url.protocol !== 'http:') return false;
   if (url.username || url.password) return false;
-  const host = url.hostname.toLowerCase();
-  if (!host || host === 'localhost') return false;
+  // "localhost." and "nas.local." are the same names as without the final dot.
+  const host = url.hostname.toLowerCase().replace(/\.$/, '');
+  if (!host || host.endsWith('.') || host === 'localhost') return false;
   if (!host.includes('.') && !host.startsWith('[')) return false;
   if (BLOCKED_HOST_SUFFIXES.some((s) => host.endsWith(s))) return false;
   if (isPrivateIPv4(host) || isPrivateIPv6(host)) return false;
@@ -70,6 +98,12 @@ export interface SafeFetchOptions {
   accept?: string;
   /** Allowed content-type prefixes, e.g. ['image/', 'video/']. Empty = any. */
   contentTypes?: string[];
+  /**
+   * 'follow' (default): follow redirects, then re-check the final address before reading.
+   * 'refuse': fail on any redirect. Use it when the address is already known, like a
+   * same-origin human.json, so no request ever leaves for a redirect target.
+   */
+  redirects?: 'follow' | 'refuse';
 }
 
 export class SafeFetchError extends Error {}
@@ -92,10 +126,13 @@ export async function safeFetch(
     const res = await fetch(url, {
       credentials: 'omit',
       referrerPolicy: 'no-referrer',
-      redirect: 'follow',
+      // Browsers hide a redirect's Location even from extensions, so redirects can't be
+      // checked hop by hop: either refuse them, or follow and check where they ended.
+      redirect: opts.redirects === 'refuse' ? 'manual' : 'follow',
       signal: controller.signal,
       headers: opts.accept ? { Accept: opts.accept } : undefined,
     });
+    if (res.type === 'opaqueredirect') throw new SafeFetchError('Redirects are not followed for this address');
     if (res.url && !isSafePublicHttpUrl(res.url)) throw new SafeFetchError('Redirected to a non-public address');
     if (!res.ok) throw new SafeFetchError(`HTTP ${res.status}`);
 

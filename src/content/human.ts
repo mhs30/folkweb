@@ -16,7 +16,7 @@ export async function discoverHumanJson(): Promise<HumanJsonStatus> {
   if (url.origin !== location.origin) return { status: 'cross-origin', href: url.href };
 
   try {
-    const { bytes } = await safeFetch(url.href, { maxBytes: LIMITS.humanJsonBytes, accept: 'application/json' });
+    const { bytes } = await safeFetch(url.href, { maxBytes: LIMITS.humanJsonBytes, accept: 'application/json', redirects: 'refuse' });
     const parsed = parseHumanJsonText(new TextDecoder().decode(bytes));
     if (!parsed.ok) return { status: 'invalid', href: url.href, reason: parsed.reason };
     if (!claimCoversPage(parsed.doc, location.href)) {
