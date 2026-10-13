@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { summarizeManifestStore } from '../src/lib/c2pa-summary';
+import { headlineFor, summarizeManifestStore } from '../src/lib/c2pa-summary';
 
 const IPTC = 'http://cv.iptc.org/newscodes/digitalsourcetype/';
 
@@ -72,5 +72,50 @@ describe('summarizeManifestStore', () => {
     const s = store(null);
     (s.manifests['urn:uuid:1'].signature_info as { issuer: string }).issuer = 'x'.repeat(10_000);
     expect(summarizeManifestStore(s).signer?.length).toBe(200);
+  });
+});
+
+describe('headlineFor (audit finding #4: never more certain than the signature)', () => {
+  const forged = (extra: Record<string, unknown>) => {
+    const s = store('digitalCapture', extra);
+    (s.manifests['urn:uuid:1'].signature_info as { issuer: string }).issuer = 'Reuters';
+    return summarizeManifestStore(s);
+  };
+
+  it('states a declaration plainly only for a trusted signer', () => {
+    const h = headlineFor(forged({ validation_state: 'Trusted' }));
+    expect(h.title).toBe('Captured by a device');
+    expect(h.signerLabel).toBe('Signed by');
+  });
+
+  it('replaces the declaration when validation failed', () => {
+    for (const extra of [{ validation_state: 'Invalid' }, { validation_status: [{ code: 'assertion.dataHash.mismatch' }] }]) {
+      const h = headlineFor(forged(extra));
+      expect(h.title).toBe('Credentials failed validation');
+      expect(`${h.title} ${h.detail}`).not.toMatch(/captured/i);
+      expect(h.signerLabel).toBe('Claimed signer');
+    }
+  });
+
+  it.each([
+    [{ validation_status: [{ code: 'signingCredential.untrusted' }] }, /trust list/],
+    [{ validation_state: 'Valid' }, /nobody has confirmed who signed/],
+    [{}, /could not confirm/],
+  ])('labels an unconfirmed signer as an unverified claim: %j', (extra, reason) => {
+    const h = headlineFor(forged(extra));
+    expect(h.title).toBe('Unverified claim: captured by a device');
+    expect(h.detail).toMatch(reason);
+    expect(h.signerLabel).toBe('Claimed signer');
+  });
+
+  it('keeps "no credentials" as unknown, never AI', () => {
+    const h = headlineFor(summarizeManifestStore(null));
+    expect(h.title).toBe('No Content Credentials');
+    expect(h.detail).toMatch(/does not mean it is AI-generated/);
+  });
+
+  it('an unverified AI declaration stays visible, labelled as unverified', () => {
+    const h = headlineFor(summarizeManifestStore(store('trainedAlgorithmicMedia', { validation_state: 'Valid' })));
+    expect(h.title).toBe('Unverified claim: declared AI-generated');
   });
 });

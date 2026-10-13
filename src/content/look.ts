@@ -16,13 +16,17 @@ const THEME_CSS: Record<Exclude<ThemeId, 'none'>, string> = {
 
 export function applyLook(settings: Settings): void {
   const root = document.documentElement;
-  upsertStyle('folkweb-calm', calmCss);
-
   const calm: string[] = [];
   if (settings.calm.noAnimations) calm.push('still');
   if (settings.calm.grayscale) calm.push('gray');
-  if (calm.length) root.setAttribute('data-folkweb-calm', calm.join(' '));
-  else root.removeAttribute('data-folkweb-calm');
+  // Only on pages that need it: every element Folkweb adds is visible to the page.
+  if (calm.length) {
+    upsertStyle('folkweb-calm', calmCss);
+    root.setAttribute('data-folkweb-calm', calm.join(' '));
+  } else {
+    removeStyle('folkweb-calm');
+    root.removeAttribute('data-folkweb-calm');
+  }
 
   if (settings.theme === 'none') {
     root.removeAttribute('data-folkweb-theme');

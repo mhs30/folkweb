@@ -56,6 +56,14 @@ to submit it under the project's licenses:
 git commit -s -m "Fix DuckDuckGo result selector"
 ```
 
+CI checks that every commit in a pull request has a `Signed-off-by` line with the commit
+author's email. If you forgot, sign off the whole branch and push again:
+
+```bash
+git rebase --signoff main
+git push --force-with-lease
+```
+
 ### AI-assisted contributions
 
 Welcome, with the same bar as any other change. You are responsible for every line you

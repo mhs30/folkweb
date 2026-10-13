@@ -16,8 +16,8 @@ export async function discoverHumanJson(): Promise<HumanJsonStatus> {
   if (url.origin !== location.origin) return { status: 'cross-origin', href: url.href };
 
   try {
-    const { bytes, finalUrl } = await safeFetch(url.href, { maxBytes: LIMITS.humanJsonBytes, accept: 'application/json' });
-    // Same origin only (SECURITY.md), including where any redirect ended.
+    const { bytes, finalUrl } = await safeFetch(url.href, { maxBytes: LIMITS.humanJsonBytes, accept: 'application/json', redirects: 'refuse' });
+    // Same origin only (SECURITY.md). Redirects are refused; checked again in case that ever changes.
     if (new URL(finalUrl).origin !== location.origin) return { status: 'invalid', href: url.href, reason: 'redirected to another site' };
     const parsed = parseHumanJsonText(new TextDecoder().decode(bytes));
     if (!parsed.ok) return { status: 'invalid', href: url.href, reason: parsed.reason };

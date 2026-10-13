@@ -138,3 +138,39 @@ export const VERDICT_TEXT: Record<C2paVerdict, { icon: string; title: string; de
   credentials: { icon: 'ⓒ', title: 'Has Content Credentials', detail: 'Credentials are present but do not state how the content was made.' },
   none: { icon: '·', title: 'No Content Credentials', detail: 'Nothing is known about this file’s origin. This does not mean it is AI-generated.' },
 };
+
+const UNVERIFIED_REASON: Record<Exclude<C2paValidation, 'trusted' | 'invalid'>, string> = {
+  valid: 'The signature is intact, but nobody has confirmed who signed it.',
+  'untrusted-signer': 'The signature is intact, but the signer is not on the Content Credentials trust list, so anyone could have made this claim.',
+  unknown: 'Folkweb could not confirm the signature.',
+};
+
+export interface C2paHeadline {
+  icon: string;
+  title: string;
+  detail: string;
+  /** Row label for the signer: only a trusted signature confirms who signed. */
+  signerLabel: 'Signed by' | 'Claimed signer';
+}
+
+/**
+ * The headline never looks more certain than the signature (SECURITY.md invariant 10):
+ * a declaration is stated plainly only when the signer is on the trust list, a failed
+ * validation replaces the declaration, and anything else is labelled an unverified claim.
+ */
+export function headlineFor(summary: C2paSummary): C2paHeadline {
+  const v = VERDICT_TEXT[summary.verdict];
+  if (summary.verdict === 'none') return { ...v, signerLabel: 'Claimed signer' };
+  if (summary.validation === 'trusted') return { ...v, signerLabel: 'Signed by' };
+  if (summary.validation === 'invalid') {
+    return {
+      icon: '⚠️',
+      title: 'Credentials failed validation',
+      detail: 'The file or its credentials changed after signing, or the signature is broken. What they declare can’t be relied on.',
+      signerLabel: 'Claimed signer',
+    };
+  }
+  const reason = UNVERIFIED_REASON[summary.validation];
+  const title = summary.verdict === 'credentials' ? v.title : `Unverified claim: ${v.title.charAt(0).toLowerCase()}${v.title.slice(1)}`;
+  return { icon: v.icon, title, detail: `${v.detail} ${reason}`, signerLabel: 'Claimed signer' };
+}

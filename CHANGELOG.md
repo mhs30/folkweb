@@ -22,4 +22,4 @@ Not released to any store yet. Planned as **0.2.0**, the first public release.
 ### Security
 - Minimal permissions (`storage`, `contextMenus`), host access only per site when you check an image, strict content security policy, no remote code, no telemetry.
 - Untrusted input everywhere is validated: pages, lists, imported files, storage and content-script replies.
-- Supply chain: exact pinned dependencies, install scripts disabled, SHA-pinned CI actions, Dependabot with a 7-day cooldown, a security scan on every change, browser smoke tests, reproducible builds and signed build provenance for releases.
+- Supply chain: exact pinned dependencies with every build and lint tool in the lockfile, install scripts disabled, SHA-pinned CI actions, Dependabot with a 7-day cooldown, a security scan on every change, browser smoke tests, reproducible builds, and signed build provenance for releases, which are built by a job that can't write to the repository.

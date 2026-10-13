@@ -14,7 +14,7 @@ Don't file public issues for vulnerabilities. We aim to reply within 7 days.
 | Asset | Threat | Mitigation |
 |---|---|---|
 | User's browsing (all sites) | Malicious page attacks the content script (DOM clobbering, spoofed messages, crafted markup) | Isolated world only; no `window.postMessage`; text-only DOM writes; every page value is untrusted input |
-| Extension privileges | Page or list tricks the extension into fetching internal URLs (SSRF) or navigating to `javascript:` | `src/lib/url-safety.ts`: public http(s) only, no credentials, private/local ranges blocked, re-checked after redirects; no cookies sent |
+| Extension privileges | Page or list tricks the extension into fetching internal URLs (SSRF) or navigating to `javascript:` | `src/lib/url-safety.ts`: public http(s) only (IPv6 literals only in global unicast), no credentials, private/local ranges blocked including trailing-dot names, re-checked after redirects (human.json refuses redirects); no cookies sent |
 | Filter lists (bundled, user, future remote) | A list injects CSS that exfiltrates data (`url()`), breaks out of the rule block, or runs code (scriptlets) | Safe subset parser (`src/lib/filters.ts`): rejects `{ } ; @ < \`, comments, `url()`, scriptlets, CSS injection, procedural filters. The browser parser double-checks via `CSS.supports` |
 | human.json documents | Impersonation (site A claims site B), oversized or garbage payloads | Claim only counts if it covers the page URL; strict schema; size and vouch caps; same-origin fetch only (MVP) |
 | C2PA media | Huge or malicious files, misleading "verdicts" | Size cap (50 MB), timeout, content-type check, bundled CAI WASM on an isolated extension page (no worker, no `blob:` CSP exception); UI states what credentials *declare*, and never says "AI" because credentials are missing |
@@ -55,5 +55,7 @@ Any new permission, `host_permissions`, `web_accessible_resources`,
 ## Known limitations
 
 - DNS rebinding: a public hostname that resolves to a private IP is not detected. Impact is limited because fetches are GET-only, carry no cookies, and are only parsed locally.
+- Redirects for Content Credentials checks are checked where they end, not hop by hop: browsers hide a redirect's target even from extensions. A public file that redirects to a private address therefore causes one GET without cookies to that address before Folkweb refuses to read the answer. human.json fetches refuse redirects entirely.
 - Pages with a strict `style-src` CSP may block Folkweb's injected `<style>` elements. `:has-text()` and sponsored hiding still work because they use inline styles set through the CSSOM. A move to `scripting.insertCSS` would need the `scripting` permission and is tracked in the roadmap.
+- Pages can tell Folkweb is running. They can see the styles and attributes it adds (theme, calm, hidden and ★ marks) and which of their own elements it hid, which reveals some settings and, on that site, your custom filters for it. Your lists and trust circle are only used for marks on Google, DuckDuckGo and Bing results. Folkweb adds nothing on sites where it is paused, and the calm layer only when a calm option is on. Hiding all of this from pages would need `scripting.insertCSS` (above).
 - Cross-origin human.json and 2+ hop trust are not fetched yet (they need optional host permissions).
