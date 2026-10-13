@@ -1,8 +1,11 @@
-import { hostMatchesToken } from './filters';
+import { GOOGLE_SEARCH_DOMAINS } from './google-domains';
 
 /**
  * Search engine adapters for annotating results with curator signals.
  * Selectors verified 2026-10-12 (see lists/ai-surfaces.txt for the method).
+ *
+ * Hosts are matched exactly: the marks Folkweb adds to results are visible to the page,
+ * so a lookalike "search page" must never get them (it could read your lists back).
  */
 
 export interface SearchAdapter {
@@ -33,10 +36,16 @@ export function hostFromCite(text: string | null | undefined): string | null {
   return hostFromHref(/^https?:\/\//.test(first) ? first : `https://${first}`);
 }
 
+/** Google's own search hosts only: google.<domain> or www.google.<domain> from Google's list. */
+export function isGoogleSearchHost(hostname: string): boolean {
+  const h = hostname.toLowerCase().replace(/\.$/, '');
+  return GOOGLE_SEARCH_DOMAINS.has(h.startsWith('www.') ? h.slice(4) : h);
+}
+
 export const SEARCH_ADAPTERS: SearchAdapter[] = [
   {
     id: 'google',
-    matches: (u) => hostMatchesToken(u.hostname, 'google.*') && u.pathname === '/search',
+    matches: (u) => isGoogleSearchHost(u.hostname) && u.pathname === '/search',
     resultSelector: '#search a:has(h3)',
     resultsContainerSelector: '#search',
     hostOf: (el) => hostFromHref((el as HTMLAnchorElement).href),
@@ -66,7 +75,7 @@ export function adapterFor(url: URL): SearchAdapter | null {
  * searches: leave image/news/shopping/etc. (tbm/udm already set) untouched.
  */
 export function googleWebOnlyUrl(url: URL): string | null {
-  if (!hostMatchesToken(url.hostname, 'google.*') || url.pathname !== '/search') return null;
+  if (!isGoogleSearchHost(url.hostname) || url.pathname !== '/search') return null;
   if (!url.searchParams.has('q') || url.searchParams.has('udm') || url.searchParams.has('tbm')) return null;
   const next = new URL(url.href);
   next.searchParams.set('udm', '14');
