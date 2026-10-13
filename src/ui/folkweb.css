@@ -8,6 +8,8 @@
   --fw-line: #e6e1d8;
   --fw-brand: #d9542b;
   --fw-brand-strong: #b8411b;
+  /* Top of the primary button gradient: white text needs ≥4.5:1 (WCAG AA); #d9542b is 4.0:1. */
+  --fw-brand-button: #c2461f;
   --fw-brand-soft: #fde9df;
   --fw-brand-ink: #8a2f12;
   --fw-link: #2357c6;
@@ -28,6 +30,7 @@
     --fw-line: #2f333d;
     --fw-brand: #f0875c;
     --fw-brand-strong: #e8703f;
+    --fw-brand-button: #f0875c;
     --fw-brand-soft: #3a2219;
     --fw-brand-ink: #ffc9b0;
     --fw-link: #93b4ff;
@@ -99,7 +102,7 @@ button:disabled { opacity: 0.55; cursor: default; }
 button.fw-primary {
   color: #fff;
   border-color: var(--fw-brand-strong);
-  background: linear-gradient(180deg, var(--fw-brand), var(--fw-brand-strong));
+  background: linear-gradient(180deg, var(--fw-brand-button), var(--fw-brand-strong));
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 2px 6px rgba(185, 65, 27, 0.25);
 }
 @media (prefers-color-scheme: dark) { button.fw-primary { color: #1b0f0a; } }

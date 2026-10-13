@@ -55,7 +55,7 @@ export const HIDE_KIND_INFO: Record<HideKind, { icon: string; title: string; why
   'blocked-result': {
     icon: '⛔',
     title: 'Results from blocked sites',
-    why: 'The result links to a domain on your block list or a block list you follow.',
+    why: 'The result links to a domain on your block list or Folkweb’s.',
   },
   'untrusted-result': {
     icon: '🔎',

@@ -72,11 +72,18 @@ export function adapterFor(url: URL): SearchAdapter | null {
 
 /**
  * Google "Web" results (udm=14) drop AI Overviews. Only rewrite plain web
- * searches: leave image/news/shopping/etc. (tbm/udm already set) untouched.
+ * searches: leave image/news/shopping/etc. (tbm/udm already set) untouched, and
+ * never rewrite when you came from a Google results page (you chose "All" there).
  */
-export function googleWebOnlyUrl(url: URL): string | null {
+export function googleWebOnlyUrl(url: URL, referrer = ''): string | null {
   if (!isGoogleSearchHost(url.hostname) || url.pathname !== '/search') return null;
   if (!url.searchParams.has('q') || url.searchParams.has('udm') || url.searchParams.has('tbm')) return null;
+  try {
+    const from = new URL(referrer);
+    if (isGoogleSearchHost(from.hostname) && from.pathname === '/search') return null;
+  } catch {
+    // No or unreadable referrer: a search started elsewhere (address bar, search box).
+  }
   const next = new URL(url.href);
   next.searchParams.set('udm', '14');
   return next.href;

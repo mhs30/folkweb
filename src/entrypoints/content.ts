@@ -38,7 +38,7 @@ export default defineContentScript({
 
     // 1. Calm routing that must happen before the page renders.
     if (!isDisabledHere(settings) && settings.search.googleWebOnly) {
-      const next = googleWebOnlyUrl(url);
+      const next = googleWebOnlyUrl(url, document.referrer);
       if (next) {
         location.replace(next);
         return;
@@ -48,10 +48,14 @@ export default defineContentScript({
     // 2. Blocked domains → calm interstitial (top frame only).
     const blockedBy = matchDomain(host, blockSet(settings));
     if (!isDisabledHere(settings) && settings.blockPages && blockedBy && !(await isAllowedOnce(host))) {
-      window.stop();
       const msg: OpenBlockedMessage = { type: 'folkweb:open-blocked', url: location.href, matched: blockedBy };
-      await browser.runtime.sendMessage(msg);
-      return;
+      // Stop the page only once the stop page is on its way; if the background can't
+      // answer, the site loads normally rather than being left half-loaded.
+      const opened = await browser.runtime.sendMessage(msg).catch(() => false);
+      if (opened === true) {
+        window.stop();
+        return;
+      }
     }
 
     // Set when the person asks the popup to show what was hidden; lasts until reload.

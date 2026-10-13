@@ -58,7 +58,7 @@ function doesAndDoesnt(): HTMLElement {
         'ul',
         { class: 'fw-list' },
         item('🧹', 'Hides the AI panels, AI summaries and sponsored modules you didn’t ask for, each one your choice. The toolbar button shows ', h('em', {}, 'what'), ' it hid on each page and ', h('em', {}, 'why'), '.'),
-        item('★', 'Marks results from human-made sites on lists you follow, and hides known content farms in Google, DuckDuckGo and Bing.'),
+        item('★', 'Marks results from human-made sites on Folkweb’s boost list or yours, and hides sites you block, in Google, DuckDuckGo and Bing.'),
         item('🟢', 'Reads ', extLink(PROJECT_LINKS.humanJson, 'human.json'), ': sites saying a person runs them, and vouching for others you can choose to trust.'),
         item('📷', 'Right-click an image → “Check Content Credentials” shows who signed it and how it was made, when that information exists.'),
         item('🌿', 'No autoplay, still pages, and optional retro looks for every site.'),

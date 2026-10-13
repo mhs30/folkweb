@@ -9,6 +9,7 @@
   --line: #e6e1d8;
   --brand: #d9542b;
   --brand-strong: #b8411b;
+  --brand-button: #c2461f; /* white text ≥4.5:1 (WCAG AA) */
   --brand-soft: #fde9df;
   --brand-ink: #8a2f12;
   --link: #2357c6;
@@ -27,6 +28,7 @@
     --line: #2f333d;
     --brand: #f0875c;
     --brand-strong: #f49a74;
+    --brand-button: #f0875c;
     --brand-soft: #3a2219;
     --brand-ink: #ffc9b0;
     --link: #93b4ff;
@@ -121,7 +123,7 @@ ol li, ul li { margin: 5px 0; }
   padding: 9px 18px;
   border-radius: 10px;
   border: 1px solid var(--brand-strong);
-  background: linear-gradient(180deg, var(--brand), var(--brand-strong));
+  background: linear-gradient(180deg, var(--brand-button), var(--brand-strong));
   color: #fff;
   font-weight: 600;
   text-decoration: none;

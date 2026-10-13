@@ -205,7 +205,7 @@ export function buildRevealCss(selectors: readonly string[], isValid: (s: string
   return cssForSelectors(selectors, isValid, REVEAL_DECLARATION);
 }
 
-export const REVEAL_DECLARATION = 'outline: 2px dashed #c9a227 !important; outline-offset: 2px !important;';
+export const REVEAL_DECLARATION = 'outline: 2px dashed #9a7a12 !important; outline-offset: 2px !important;';
 
 function cssForSelectors(selectors: readonly string[], isValid: (s: string) => boolean, declaration: string): string {
   return selectors

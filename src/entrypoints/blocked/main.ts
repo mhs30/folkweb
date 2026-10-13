@@ -42,7 +42,7 @@ async function render(): Promise<void> {
       h('img', { class: 'fw-logo', src: '/icon/logo.svg', alt: '', width: '56', height: '56' }),
       h('h1', {}, 'Let’s take a different path'),
       h('p', {}, h('strong', {}, host), ' is on a block list you use', matched && matched !== host ? ` (as ${matched})` : '', '.'),
-      h('p', { class: 'fw-muted' }, 'Folkweb pauses sites that you or curators you follow put on a block list, such as content farms. You are always free to continue.'),
+      h('p', { class: 'fw-muted' }, 'Folkweb stops before sites on your block list, so you can decide. You are always free to continue.'),
       h(
         'div',
         { class: 'fw-actions' },

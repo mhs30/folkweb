@@ -54,6 +54,15 @@ describe('search helpers', () => {
     expect(googleWebOnlyUrl(new URL('https://google.evil.example/search?q=x'))).toBeNull();
   });
 
+  it('keeps the "All" tab when you came from a Google results page', () => {
+    const all = new URL('https://www.google.com/search?q=weather');
+    expect(googleWebOnlyUrl(all, 'https://www.google.com/search?q=weather&udm=14')).toBeNull();
+    expect(googleWebOnlyUrl(all, 'https://www.google.de/search?q=wetter')).toBeNull();
+    expect(googleWebOnlyUrl(all, 'https://www.google.com/')).toContain('udm=14');
+    expect(googleWebOnlyUrl(all, 'https://example.com/search?q=x')).toContain('udm=14');
+    expect(googleWebOnlyUrl(all, 'not a url')).toContain('udm=14');
+  });
+
   it('matches only Google’s own search hosts, never lookalikes (audit finding #1)', () => {
     for (const ok of ['https://www.google.com/search?q=x', 'https://google.de/search?q=x', 'https://www.google.com.au/search?q=x', 'https://www.google.co.uk./search?q=x', 'https://www.google.cat/search?q=x']) {
       expect(adapterFor(new URL(ok))?.id, ok).toBe('google');
