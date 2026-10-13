@@ -44,7 +44,7 @@
           <li><strong>No remote code.</strong> Everything that runs ships inside the extension. No eval, no remote scripts, a strict content security policy.</li>
           <li><strong>Pages are treated as hostile.</strong> Folkweb only writes text into pages, never HTML, and ignores messages from pages.</li>
           <li><strong>Lists are data, not code.</strong> Filter lists use a safe subset of the uBlock Origin syntax. Anything that could run code or load resources is rejected.</li>
-          <li><strong>Safe networking.</strong> Every request goes through one checked function: no cookies, size and time limits, and no access to local or private addresses.</li>
+          <li><strong>Safe networking.</strong> Every request goes through one checked function: no cookies, size and time limits, and addresses on your local network are refused. The Content Credentials reader never contacts other addresses. Two narrow edge cases (DNS rebinding, and a file that redirects) are documented in our security policy.</li>
           <li><strong>Supply chain.</strong> Exactly pinned dependencies, install scripts disabled, CI actions pinned to commits, and a security scan on every change.</li>
         </ul>
       </section>
