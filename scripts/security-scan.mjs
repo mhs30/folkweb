@@ -7,10 +7,12 @@
 //   5. Dependencies: exact versions; optional `--audit` runs npm audit.
 //   6. CI workflows: actions pinned to commit SHAs, explicit permissions, no pull_request_target.
 //   7. Website: no scripts or inline styles, nothing loaded from elsewhere, strict CSP, fresh security.txt.
+//   8. Maintainer-only material (launch plans, accounts, budget, funding) never enters this public repository.
 // Usage: node scripts/security-scan.mjs [--audit]
 import { execSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { findMaintainerOnly } from './maintainer-only.mjs';
 
 const ROOT = process.cwd();
 const findings = [];
@@ -182,6 +184,9 @@ if (existsSync(SITE_DIR)) {
     else if (days > 366) fail('site/.well-known/security.txt', 'Expires must be less than a year ahead (RFC 9116)');
   }
 }
+
+// --- 8. Maintainer-only material --------------------------------------------
+for (const f of findMaintainerOnly(ROOT)) fail(f.split(': ')[0] ?? f, `${f.split(': ')[1] ?? 'maintainer-only'}: it belongs in the private ops repository`);
 
 if (findings.length) {
   console.error(`✗ security scan found ${findings.length} problem(s):`);

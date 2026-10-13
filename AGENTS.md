@@ -16,7 +16,8 @@ You must **never**:
 - Build or ship "AI detection" scores for text or images. Folkweb shows evidence, never guesses.
 - Read, print or commit secrets (`.env`, keys, tokens). Don't dump environment variables.
 - Weaken guardrails to make a check pass: tests, `scripts/security-scan.mjs`, ESLint rules, CSP, `.npmrc`.
-- Add maintainer-only material to this public repository: launch plans, infrastructure or account setup (DNS, hosting, email, store accounts), budget, legal or funding notes. That lives in the maintainers' private repository.
+- Add maintainer-only material to this public repository: launch plans, infrastructure or account setup (DNS, hosting, email, store accounts), budget, legal or funding notes. That lives in the maintainers' private repository. `npm run security` refuses files that carry its marker or its known file names.
+- Change a repository's visibility (make it public or private). A maintainer does that by hand; the guard denies it.
 
 These need **explicit human approval** (the `.github/hooks/safety.json` guard will ask):
 - Permissions, CSP or anything else in the manifest (`wxt.config.ts`). Justify it in SECURITY.md first.

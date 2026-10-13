@@ -136,4 +136,22 @@ describe('agent guard hook', () => {
       (cmd) => expect(decide(shell(cmd))).not.toBe('deny'),
     );
   });
+
+  describe('repository visibility is a maintainer-only, manual step', () => {
+    it.each([
+      'gh repo edit mhs30/folkweb --visibility public --accept-visibility-change-consequences',
+      'gh repo edit --visibility private',
+      'gh repo create x --public',
+      'gh api -X PATCH repos/mhs30/folkweb -f visibility=public',
+      'gh api -X PATCH repos/mhs30/folkweb -F private=false',
+      'curl -X PATCH https://api.github.com/repos/mhs30/folkweb -d \'{"private": false}\'',
+      'ops/go-public.sh',
+      'bash ../folkweb-ops/ops/go-public.sh',
+    ])('denies %s', (cmd) => expect(decide(shell(cmd))).toBe('deny'));
+
+    it.each(['gh repo view mhs30/folkweb --json visibility', "gh api repos/mhs30/folkweb --jq '.visibility'", 'ops/go-public.sh --dry-run'])(
+      'allows reading it: %s',
+      (cmd) => expect(decide(shell(cmd))).toBeNull(),
+    );
+  });
 });

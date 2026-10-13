@@ -61,7 +61,7 @@ page are visible to that page's scripts. Badges use one generic title for the sa
 |---|---|---|
 | Unit tests (Vitest, Node and happy-dom) | `tests/` | Parsers, validators, URL safety, trust graph, themes, site files; attack cases for every parser |
 | Browser smoke tests (Playwright, Chromium) | `e2e/` | The built extension installs, every page renders, content-script features work on local fixture pages, and **no error is logged anywhere**, including Chrome's own extension Errors page |
-| Security gate | `scripts/security-scan.mjs` | Manifest, source bans, lists, secrets, dependencies, CI workflows, website |
+| Security gate | `scripts/security-scan.mjs` | Manifest, source bans, lists, secrets, dependencies, CI workflows, website, no maintainer-only material (`scripts/maintainer-only.mjs`) |
 | Firefox lint | `npm run lint:firefox` | Mozilla's addons-linter, as AMO runs it |
 | DCO check (pull requests) | `scripts/check-dco.mjs` | Every commit in a pull request is signed off by its author |
 

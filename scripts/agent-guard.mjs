@@ -65,6 +65,12 @@ const DENY_COMMANDS = [
   [/ignore-scripts\s*(=|\s)\s*false|--no-ignore-scripts|npm\s+config\s+set\s+ignore-scripts/, 'Install scripts must stay disabled (.npmrc).'],
   [SECRET_PATH, 'Reading or copying secrets is forbidden.'],
   [/\b(printenv|env|export\s+-p|declare\s+-p|set|compgen\s+-v)\s*($|[;&|>])|\b(node|deno|bun)\b[^;&|]*\s(-e|-p|--eval|--print)\b[^;&|]*process\.env(?![.[\w])/, 'Dumping environment variables is forbidden.'],
+  // Making a repository public publishes its whole history. Only a maintainer does that, by hand.
+  [
+    /--accept-visibility-change-consequences|\bgh\s+repo\s+(edit|create)\b[^;&|]*--(visibility|public)\b|\b(gh\s+api|api\.github\.com)\b[^;&|]*\b(visibility|private)\b[^;&|]*(public|false)|\b(gh\s+api|api\.github\.com)\b[^;&|]*(public|false)[^;&|]*\b(visibility|private)\b/,
+    'Changing repository visibility is done by a maintainer, by hand, never by an agent.',
+  ],
+  [/\bgo-public\.sh\b(?![^;&|]*--dry-run)/, 'ops/go-public.sh changes GitHub settings: a maintainer runs it (agents may use --dry-run).'],
 ];
 
 const ASK_COMMANDS = [
