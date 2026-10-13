@@ -1,6 +1,6 @@
 import initC2pa, { WasmReader } from '@contentauth/c2pa-wasm';
 import { browser } from 'wxt/browser';
-import { headlineFor, summarizeManifestStore, type C2paSummary } from '../../lib/c2pa-summary';
+import { C2PA_READER_CONTEXT, headlineFor, isRemoteManifestError, summarizeManifestStore, type C2paSummary } from '../../lib/c2pa-summary';
 import { LIMITS } from '../../lib/constants';
 import { parseSafeUrl, safeFetch } from '../../lib/url-safety';
 import { extLink, h, mount } from '../../ui/dom';
@@ -13,7 +13,7 @@ const src = parseSafeUrl(new URLSearchParams(location.search).get('src'));
 const VALIDATION_TEXT: Record<C2paSummary['validation'], string> = {
   trusted: 'Signature valid, signer on the trust list',
   valid: 'Signature valid (signer not checked against a trust list)',
-  'untrusted-signer': 'Signature intact, but the signer is not on the trust list',
+  'untrusted-signer': 'Signature intact, but the signer couldn’t be confirmed',
   invalid: 'Credentials failed validation — the file may have been altered',
   unknown: 'Validation status not reported',
 };
@@ -76,10 +76,20 @@ async function check(url: URL): Promise<void> {
     await initC2pa({ module_or_path: WASM_URL });
     let reader: WasmReader;
     try {
-      reader = await WasmReader.fromBytes(blob.type, bytes);
+      reader = await WasmReader.fromBytes(blob.type, bytes, C2PA_READER_CONTEXT);
     } catch (err) {
       if (/JumbfNotFound|ManifestNotFound/.test(errorText(err))) {
         renderSummary(summarizeManifestStore(null), previewUrl);
+        return;
+      }
+      if (isRemoteManifestError(errorText(err))) {
+        mount(
+          app,
+          panel(
+            h('p', { class: 'fw-verdict' }, 'ⓘ Credentials stored elsewhere'),
+            h('p', {}, 'This file says its Content Credentials are kept at another address. Folkweb only reads what is inside the file and never contacts other addresses, so it did not fetch them. This does not mean the file is AI-generated.'),
+          ),
+        );
         return;
       }
       throw err;

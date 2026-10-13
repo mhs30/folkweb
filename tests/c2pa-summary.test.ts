@@ -98,8 +98,8 @@ describe('headlineFor (audit finding #4: never more certain than the signature)'
   });
 
   it.each([
-    [{ validation_status: [{ code: 'signingCredential.untrusted' }] }, /trust list/],
-    [{ validation_state: 'Valid' }, /nobody has confirmed who signed/],
+    [{ validation_status: [{ code: 'signingCredential.untrusted' }] }, /couldn’t be confirmed/],
+    [{ validation_state: 'Valid' }, /doesn’t check signers against a trust list/],
     [{}, /could not confirm/],
   ])('labels an unconfirmed signer as an unverified claim: %j', (extra, reason) => {
     const h = headlineFor(forged(extra));

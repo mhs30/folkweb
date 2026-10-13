@@ -10,6 +10,24 @@
 export type C2paVerdict = 'ai-generated' | 'ai-assisted' | 'captured' | 'human-made' | 'credentials' | 'none';
 export type C2paValidation = 'trusted' | 'valid' | 'untrusted-signer' | 'invalid' | 'unknown';
 
+/**
+ * Settings for the bundled C2PA reader (c2pa-rs "context" JSON). The reader has its own network
+ * client: by default it fetches remote manifests named inside the file (XMP dcterms:provenance)
+ * and could reach any address, outside safeFetch(). Folkweb reads only the bytes it already
+ * fetched, so every network path is off. No trust list is bundled, so trust isn't checked:
+ * results say "valid" (signature intact, signer not checked), never a made-up "untrusted".
+ */
+export const C2PA_READER_CONTEXT = JSON.stringify({
+  version: 1,
+  core: { allowed_network_hosts: [] },
+  verify: { remote_manifest_fetch: false, ocsp_fetch: false, verify_trust: false, verify_timestamp_trust: false },
+});
+
+/** The file only points to credentials stored at another address, which Folkweb doesn't fetch. */
+export function isRemoteManifestError(message: string): boolean {
+  return /RemoteManifestUrl/.test(message);
+}
+
 export interface C2paSummary {
   verdict: C2paVerdict;
   validation: C2paValidation;
@@ -140,8 +158,8 @@ export const VERDICT_TEXT: Record<C2paVerdict, { icon: string; title: string; de
 };
 
 const UNVERIFIED_REASON: Record<Exclude<C2paValidation, 'trusted' | 'invalid'>, string> = {
-  valid: 'The signature is intact, but nobody has confirmed who signed it.',
-  'untrusted-signer': 'The signature is intact, but the signer is not on the Content Credentials trust list, so anyone could have made this claim.',
+  valid: 'The signature is intact, but Folkweb doesn’t check signers against a trust list yet, so who signed it is a claim.',
+  'untrusted-signer': 'The signature is intact, but the signer couldn’t be confirmed, so anyone could have made this claim.',
   unknown: 'Folkweb could not confirm the signature.',
 };
 
