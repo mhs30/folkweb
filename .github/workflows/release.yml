@@ -41,9 +41,8 @@ jobs:
       - name: Write the release notes
         env:
           TAG: ${{ github.ref_name }}
-        run: |
-          mkdir release
-          node scripts/release-notes.mjs "$TAG" > release/release-notes.md
+        # Outside the project folder, so nothing extra ends up in the sources zip.
+        run: node scripts/release-notes.mjs "$TAG" > "$RUNNER_TEMP/release-notes.md"
       - run: npm ci # install scripts disabled via .npmrc
       - run: npx playwright install --with-deps chromium
       - run: npm run check
@@ -52,6 +51,8 @@ jobs:
         run: |
           npm run zip
           npm run zip:firefox
+          mkdir release
+          cp "$RUNNER_TEMP/release-notes.md" release/
           cp .output/*.zip release/
           cd release
           sha256sum *.zip > SHA256SUMS.txt

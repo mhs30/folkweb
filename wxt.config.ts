@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { defineConfig } from 'wxt';
 
@@ -9,6 +10,22 @@ import { defineConfig } from 'wxt';
 // - No web_accessible_resources: pages cannot fingerprint or frame our UI.
 // - The C2PA WASM is bundled locally; we never load remote code.
 const C2PA_WASM = resolve('node_modules/@contentauth/c2pa-wasm/pkg/c2pa_bg.wasm');
+
+/**
+ * Files git tracks (plus .npmrc), so the sources zip never picks up local, untracked files such
+ * as notes, keys or release scratch files, and a release rebuild matches it. Outside a git
+ * checkout (a reviewer rebuilding from the sources zip) every file is used, as before.
+ */
+function sourceFiles(): string[] {
+  try {
+    const tracked = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
+      .split('\0')
+      .filter((f) => f && !f.startsWith('.'));
+    return tracked.length ? [...tracked, '.npmrc'] : ['**/*', '.npmrc'];
+  } catch {
+    return ['**/*', '.npmrc'];
+  }
+}
 
 export default defineConfig({
   srcDir: 'src',
@@ -43,7 +60,7 @@ export default defineConfig({
   // The sources zip goes to Mozilla's reviewers with each Firefox release (see docs/RELEASING.md).
   // Keep .npmrc so a rebuild also runs with install scripts disabled; leave out local test output.
   zip: {
-    includeSources: ['**/*', '.npmrc'],
+    includeSources: sourceFiles(),
     excludeSources: ['test-results/**', 'playwright-report/**', 'site/**', 'coverage/**'],
   },
 });
