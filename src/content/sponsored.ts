@@ -18,7 +18,6 @@ const LABELS = new Set([
   'sponsorisé',
   'sponsorizzato',
   'reklam',
-  'annonce',
 ]);
 
 const FEED_ITEMS = [
@@ -30,6 +29,8 @@ const FEED_ITEMS = [
 ].join(',');
 
 const MAX_TEXT_NODES = 150;
+// Platforms put the label in the item's header, next to the author: only its first texts count.
+const HEADER_TEXT_NODES = 25;
 const MAX_CHECKS = 3;
 const checked = new WeakMap<Element, number>();
 
@@ -39,15 +40,24 @@ export function isSponsoredLabel(text: string | null | undefined): boolean {
   return t.length > 0 && t.length <= 14 && LABELS.has(t);
 }
 
+/** The label belongs to this item, not to one nested inside it (a comment or a quoted post). */
+function ownedBy(node: Node, item: Element): boolean {
+  const el = node instanceof Element ? node : node.parentElement;
+  return el?.closest(FEED_ITEMS) === item;
+}
+
 function findLabel(item: Element): string | null {
   for (const el of item.querySelectorAll('[aria-label]')) {
     const label = el.getAttribute('aria-label');
-    if (isSponsoredLabel(label)) return label!.trim();
+    if (isSponsoredLabel(label) && ownedBy(el, item)) return label!.trim();
   }
   const walker = document.createTreeWalker(item, NodeFilter.SHOW_TEXT);
   let n = 0;
-  for (let node = walker.nextNode(); node && n < MAX_TEXT_NODES; node = walker.nextNode(), n++) {
-    if (isSponsoredLabel(node.nodeValue)) return node.nodeValue!.trim();
+  let headerTexts = 0;
+  for (let node = walker.nextNode(); node && n < MAX_TEXT_NODES && headerTexts < HEADER_TEXT_NODES; node = walker.nextNode(), n++) {
+    if (!node.nodeValue?.trim() || !ownedBy(node, item)) continue;
+    headerTexts++;
+    if (isSponsoredLabel(node.nodeValue)) return node.nodeValue.trim();
   }
   return null;
 }

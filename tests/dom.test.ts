@@ -50,4 +50,45 @@ describe('sponsored heuristic', () => {
     document.body.append(big);
     expect(scanSponsored()).toBe(0);
   });
+
+  describe('other people can’t hide your posts (audit finding #6)', () => {
+    it('a comment that just says "Sponsored" hides at most that comment, never the post', () => {
+      const comment = h('div', { role: 'article' }, h('span', {}, 'Mallory'), h('span', {}, 'Sponsored'));
+      const post = h('div', { 'data-pagelet': 'FeedUnit_1' }, h('span', {}, 'Alice'), h('p', {}, 'My holiday photos'), comment);
+      document.body.append(post);
+      scanSponsored();
+      expect(post.hasAttribute(HIDDEN_ATTR)).toBe(false);
+    });
+
+    it('a quoted post labelled "Ad" doesn’t hide the post that quotes it', () => {
+      const quoted = h('article', {}, h('span', { 'aria-label': 'Ad' }), h('p', {}, 'Buy now'));
+      const post = h('article', {}, h('span', {}, 'Bob'), h('p', {}, 'Look at this ad, ha'), quoted);
+      document.body.append(post);
+      scanSponsored();
+      expect(post.hasAttribute(HIDDEN_ATTR)).toBe(false);
+      expect(quoted.hasAttribute(HIDDEN_ATTR)).toBe(true);
+    });
+
+    it('a label far below the header (a reply in a thread) doesn’t count', () => {
+      const lines = Array.from({ length: 30 }, (_, i) => h('p', {}, `Reply ${i}`));
+      const post = h('article', {}, h('span', {}, 'Carol'), ...lines, h('p', {}, 'Ad'));
+      document.body.append(post);
+      expect(scanSponsored()).toBe(0);
+    });
+
+    it('a real header label on a post still hides it (X: cell > article)', () => {
+      const tweet = h('article', {}, h('span', {}, 'Brand'), h('span', {}, '@brand'), h('span', {}, 'Ad'), h('p', {}, 'Buy'));
+      const cell = h('div', { 'data-testid': 'cellInnerDiv' }, tweet);
+      document.body.append(cell);
+      expect(scanSponsored()).toBe(1);
+      expect(tweet.hasAttribute(HIDDEN_ATTR)).toBe(true);
+    });
+
+    it('"Annonce" (French for listing as well as ad) is not a label', () => {
+      const listing = h('article', {}, h('span', {}, 'Annonce'), h('p', {}, 'Vélo, 120 €'));
+      document.body.append(listing);
+      expect(scanSponsored()).toBe(0);
+      expect(isSponsoredLabel('Sponsorisé')).toBe(true);
+    });
+  });
 });
