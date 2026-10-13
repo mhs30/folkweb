@@ -70,8 +70,8 @@ src/
 lists/           bundled curator lists (data only)
 site/            folkweb.org: static, no JavaScript, served by Cloudflare Pages as-is
 e2e/             browser smoke tests (Playwright) and their local fixture pages
-scripts/         security scan, icon generator, release notes, agent guard hook
-docs/            architecture, roadmap, list format, launch checklist
+scripts/         security scan, DCO check, icon generator, release notes, agent guard hook
+docs/            architecture, roadmap, list format, releasing
 .github/         AI-agent instructions, skills, hooks, CI
 ```
 
