@@ -4,9 +4,9 @@
 // carries a marker line, and its known file names are refused here too, whatever their content.
 //   node scripts/maintainer-only.mjs [dir]   # exit 1 and list the files when something is found
 // Also run by scripts/security-scan.mjs.
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 
 const MARKER = 'folkweb-ops:' + 'maintainer-only';
 const NAMES = new Set(['launch.md', 'pre-flip.md', 'release-checklist.md', 'go-public.sh', 'funding-plan.md', 'launch-readiness.md']);
@@ -38,7 +38,15 @@ export function findMaintainerOnly(root) {
   return found;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+// Run directly (also through a symlinked path such as macOS /tmp → /private/tmp)?
+const realPath = (p) => {
+  try {
+    return realpathSync(p);
+  } catch {
+    return p;
+  }
+};
+if (process.argv[1] && realPath(process.argv[1]) === realPath(fileURLToPath(import.meta.url))) {
   const found = findMaintainerOnly(process.argv[2] ?? process.cwd());
   if (found.length) {
     console.error('✗ maintainer-only material belongs in the private ops repository:');
