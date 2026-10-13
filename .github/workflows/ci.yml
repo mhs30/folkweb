@@ -51,4 +51,12 @@ jobs:
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
-        run: node scripts/check-dco.mjs "$BASE" "$HEAD"
+        # Run the checker from the base commit, so a pull request can't weaken the check
+        # that judges it. Only the pull request that adds the checker uses its own copy.
+        run: |
+          if git cat-file -e "$BASE:scripts/check-dco.mjs" 2>/dev/null; then
+            git show "$BASE:scripts/check-dco.mjs" > "$RUNNER_TEMP/check-dco.mjs"
+          else
+            cp scripts/check-dco.mjs "$RUNNER_TEMP/check-dco.mjs"
+          fi
+          node "$RUNNER_TEMP/check-dco.mjs" "$BASE" "$HEAD"

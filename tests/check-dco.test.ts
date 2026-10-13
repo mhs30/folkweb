@@ -108,6 +108,13 @@ describe('DCO check', () => {
     expect(check(base, head).status).toBe(1);
   });
 
+  it('a forged GitHub bot address is not on the allowlist', () => {
+    const base = commit('base');
+    const forged = { name: 'evil[bot]', email: 'evil[bot]@users.noreply.github.com' };
+    const head = commit('Forged bot\n\nSigned-off-by: Someone <someone@example.org>', forged);
+    expect(check(base, head).status).toBe(1);
+  });
+
   it('ignores merge commits', () => {
     const base = commit('base');
     git(['checkout', '-q', '-b', 'feature']);

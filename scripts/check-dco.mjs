@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // DCO check for pull requests (see CONTRIBUTING.md "Sign your commits off").
 // Every non-merge commit in BASE..HEAD needs a "Signed-off-by: Name <email>" line from its
-// author. GitHub bot accounts (author "...[bot]@users.noreply.github.com", like Dependabot)
-// sign off with another address, so for them any sign-off counts.
+// author. The GitHub bots listed in BOTS sign off with another address, so for them any
+// sign-off counts. Git author fields are free text: only these exact identities qualify.
 //   node scripts/check-dco.mjs <base-sha> <head-sha>
 // Exit codes: 0 all signed off, 1 some commits are not, 2 bad usage.
 import { execFileSync } from 'node:child_process';
@@ -18,13 +18,16 @@ if (!OBJECT_NAME.test(base) || !OBJECT_NAME.test(head)) {
 const git = (...args) => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
 
 const SIGN_OFF = /^Signed-off-by:[ \t]*[^<>\n]*<([^<>\s]+)>[ \t]*$/gim;
-const BOT_EMAIL = /\[bot\]@users\.noreply\.github\.com$/i;
+const BOTS = new Set([
+  '49699333+dependabot[bot]@users.noreply.github.com',
+  '41898282+github-actions[bot]@users.noreply.github.com',
+]);
 
 const missing = [];
 for (const sha of git('rev-list', '--no-merges', `${base}..${head}`).split('\n').filter(Boolean)) {
   const [email = '', subject = '', body = ''] = git('show', '-s', '--format=%ae%x00%s%x00%B', sha).split('\0');
   const signers = [...body.matchAll(SIGN_OFF)].map((m) => (m[1] ?? '').toLowerCase());
-  const ok = BOT_EMAIL.test(email) ? signers.length > 0 : signers.includes(email.toLowerCase());
+  const ok = BOTS.has(email.toLowerCase()) ? signers.length > 0 : signers.includes(email.toLowerCase());
   if (!ok) missing.push(`  ${sha.slice(0, 12)} ${subject.slice(0, 72)} (author <${email}>)`);
 }
 
