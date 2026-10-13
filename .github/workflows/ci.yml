@@ -36,3 +36,19 @@ jobs:
       - run: npm run test:e2e
       - run: npm run lint:firefox
       - run: node scripts/security-scan.mjs --audit
+
+  # Every commit in a pull request is signed off by its author (DCO, see CONTRIBUTING.md).
+  dco:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check every commit is signed off
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-dco.mjs "$BASE" "$HEAD"

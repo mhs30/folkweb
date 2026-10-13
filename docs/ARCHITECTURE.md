@@ -63,6 +63,7 @@ page are visible to that page's scripts. Badges use one generic title for the sa
 | Browser smoke tests (Playwright, Chromium) | `e2e/` | The built extension installs, every page renders, content-script features work on local fixture pages, and **no error is logged anywhere**, including Chrome's own extension Errors page |
 | Security gate | `scripts/security-scan.mjs` | Manifest, source bans, lists, secrets, dependencies, CI workflows, website |
 | Firefox lint | `npm run lint:firefox` | Mozilla's addons-linter, as AMO runs it |
+| DCO check (pull requests) | `scripts/check-dco.mjs` | Every commit in a pull request is signed off by its author |
 
 Smoke tests serve fixture pages over HTTPS with a throwaway certificate and map test
 hostnames (`*.e2e.test`, a fake `www.bing.com`) to a local server inside the test browser
