@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Folkweb news</title>
+    <link>https://folkweb.org/</link>
+    <atom:link href="https://folkweb.org/feed.xml" rel="self" type="application/rss+xml" />
+    <description>News about Folkweb, the browser extension for a web made by people.</description>
+    <language>en</language>
+    <lastBuildDate>Mon, 12 Oct 2026 12:00:00 +0200</lastBuildDate>
+    <item>
+      <title>Folkweb is being built</title>
+      <link>https://folkweb.org/</link>
+      <guid isPermaLink="false">folkweb-2026-10-12-hello</guid>
+      <pubDate>Mon, 12 Oct 2026 12:00:00 +0200</pubDate>
+      <description>Folkweb is a free browser extension that shows signs of the people behind what you read, lets you choose whose judgement to trust, and quiets the noise. It is in testing now; this feed will announce the launch for Firefox, Edge and Chrome.</description>
+    </item>
+  </channel>
+</rss>

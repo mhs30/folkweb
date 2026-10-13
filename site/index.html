@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Folkweb — the web, by folks</title>
+    <meta name="description" content="Folkweb is a free browser extension: human signals you can see, curators you choose, and a calmer, retro web." />
+    <link rel="canonical" href="https://folkweb.org/" />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="human-json" href="/human.json" />
+    <link rel="alternate" type="application/rss+xml" title="Folkweb news" href="/feed.xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="inner">
+        <a class="brand" href="/"><img src="/logo.svg" alt="" width="36" height="36" /> <span>Folkweb</span></a>
+        <span class="tagline">the web, by folks</span>
+        <nav aria-label="Main">
+          <ul>
+          <li><a href="/" aria-current="page">Home</a></li>
+          <li><a href="/news/">News</a></li>
+          <li><a href="/privacy/">Privacy</a></li>
+          <li><a href="/curation/">Curation</a></li>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="/security/">Security</a></li>
+          <li><a href="/ai/">AI policy</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero">
+        <h1>The web, by folks.</h1>
+        <p class="lead">Folkweb is a free browser extension that puts people back at the centre of the web. It shows you signs of the people behind what you read, lets you choose whose judgement to trust, and quiets the noise in between.</p>
+        <p>Folkweb isn’t against AI. It’s for people. We want AI that helps you find, understand and connect with other people’s work, never AI that replaces them or decides for you. You choose which AI you see.</p>
+        <p class="notice"><strong>Coming soon.</strong> Folkweb is being tested now and will be available for Firefox, Edge and Chrome. Follow the <a href="/news/">news</a> (there’s an RSS feed) to hear when it launches.</p>
+      </section>
+
+      <div class="two">
+        <section class="panel">
+          <h2>What Folkweb does</h2>
+          <ul class="list">
+            <li><span class="icon" aria-hidden="true">🧹</span> Hides the AI panels, AI summaries and sponsored modules you didn’t ask for, each one your choice, and shows you <em>what</em> it hid on each page and <em>why</em>, so you can bring it back.</li>
+            <li><span class="icon" aria-hidden="true">🔎</span> Marks search results from human-made sites on lists you follow, and hides known content farms, in Google, DuckDuckGo and Bing.</li>
+            <li><span class="icon" aria-hidden="true">🟢</span> Reads <a href="https://codeberg.org/robida/human.json">human.json</a>: sites saying a person runs them, and vouching for others you can choose to trust.</li>
+            <li><span class="icon" aria-hidden="true">📷</span> Checks Content Credentials (<a href="https://c2pa.org">C2PA</a>) on any image when you ask: who signed it and how it was made, when that information exists.</li>
+            <li><span class="icon" aria-hidden="true">🌿</span> No autoplay, still pages, and optional retro looks for every site: Newsprint, Terminal, ’98 and 2000s Web 2.0.</li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h2>What it deliberately doesn’t do</h2>
+          <ul class="list">
+            <li><span class="icon" aria-hidden="true">🚫</span> It doesn’t guess whether something is “AI”. No tool can do that honestly. Missing signals mean “unknown”, never “fake”.</li>
+            <li><span class="icon" aria-hidden="true">🔒</span> It doesn’t track you. No account, no servers, no analytics. Your settings and lists stay in your browser.</li>
+            <li><span class="icon" aria-hidden="true">🍪</span> It doesn’t block trackers or cookie banners. Keep your browser’s tracking protection or uBlock Origin; Folkweb works alongside them.</li>
+            <li><span class="icon" aria-hidden="true">👀</span> It never hides things silently. One click shows everything it hid on a page.</li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="panel">
+        <h2>Principles</h2>
+        <ol>
+          <li><strong>Evidence over guesses.</strong> Show why, never a black-box score.</li>
+          <li><strong>People over algorithms.</strong> You choose your curators and your circle.</li>
+          <li><strong>Calm by default.</strong> Less motion, fewer counts, no autoplay.</li>
+          <li><strong>Private by design.</strong> No data leaves your browser except what you ask for.</li>
+          <li><strong>Built on open standards.</strong> human.json, C2PA, RSS, webrings, uBlock list syntax.</li>
+          <li><strong>AI that humanizes.</strong> AI should help people find and understand each other’s work, on your terms: optional, clearly labelled and private. People decide. See our <a href="/ai/">AI policy</a>.</li>
+        </ol>
+      </section>
+
+      <section class="panel" id="ai-for-people">
+        <h2>AI that works for people</h2>
+        <p><strong>Today:</strong> you decide which AI features you see on the sites you use. Folkweb can hide AI panels and summaries you didn’t ask for, and Google can open as plain web results. Everything can be switched back on.</p>
+        <p><strong>Exploring next:</strong> optional helpers that use AI to bring you closer to people, not further away. For example: plain-language headlines instead of clickbait, short summaries that point you to the original author, translation so you can read small personal sites in other languages, and help finding the person behind an article.</p>
+        <p>The rules: off until you turn them on, clearly labelled, running on your own device where possible, never sending your browsing to us, and never used to guess whether something was made by a person.</p>
+      </section>
+
+      <section class="panel" id="site-owners">
+        <h2>Run a website? Help people find it</h2>
+        <p>Publish a small <code>human.json</code> file to say a person is behind your site, and vouch for sites you know are made by people. Folkweb and other tools can read it.</p>
+        <pre><code>{
+  "version": "0.1.1",
+  "url": "https://your-site.example",
+  "vouches": [
+    { "url": "https://a-friend.example", "vouched_at": "2026-10-12" }
+  ]
+}</code></pre>
+        <p>Then link it from your pages: <code>&lt;link rel="human-json" href="/human.json"&gt;</code>. This site does the same — see <a href="/human.json">ours</a>. You can also add an <a href="https://slashpages.net">/ai page</a> saying how you use AI.</p>
+      </section>
+
+    </main>
+    <footer class="site-footer">
+      <p>No cookies, no analytics, no JavaScript. · <a href="/news/">News &amp; RSS</a> · <a href="/#site-owners">About human.json</a> · <a href="/ai/">How we use AI</a></p>
+      <p>© 2026 Folkweb contributors. Code under GPL-3.0-or-later, lists under CC BY-SA 4.0.</p>
+    </footer>
+  </body>
+</html>

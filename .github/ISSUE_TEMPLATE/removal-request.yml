@@ -1,0 +1,29 @@
+name: Removal request
+description: Ask for a site to be removed from a Folkweb list. Weighed the same as additions.
+labels: ["lists", "removal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Site owners and anyone else can ask for a removal. We review it with the same care and timeline as an addition, and explain the decision publicly.
+  - type: input
+    id: domain
+    attributes:
+      label: Domain
+      placeholder: example.com
+    validations:
+      required: true
+  - type: dropdown
+    id: list
+    attributes:
+      label: Which list is it on?
+      options: ["Block", "Boost", "Not sure"]
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why should it be removed?
+      description: For example, the content changed, the evidence was wrong, or the site changed owners. Links help.
+    validations:
+      required: true

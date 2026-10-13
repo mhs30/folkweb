@@ -1,0 +1,37 @@
+! Title: Folkweb — Sponsored modules
+! Description: Hides labelled ads and sponsored placements inside pages.
+! Syntax: Folkweb safe subset of uBlock Origin cosmetic filters (see docs/LIST-FORMAT.md).
+! Scope: cosmetic only. For network-level ad blocking use uBlock Origin;
+!        Folkweb is designed to coexist with it.
+
+! --- Google Search -------------------------------------------------------
+! verified: 2026-10-12 — top and bottom text ads
+google.*###tads
+google.*###tadsb
+google.*###bottomads
+
+! --- Bing ----------------------------------------------------------------
+! unverified — no ads were shown during the 2026-10-12 check
+bing.com##li.b_ad
+
+! --- Reddit --------------------------------------------------------------
+! verified: 2026-10-12 — sidebar ad element
+reddit.com##shreddit-sidebar-ad
+! unverified — promoted posts in feeds and comment pages
+reddit.com##shreddit-ad-post
+reddit.com##shreddit-comments-page-ad
+
+! --- YouTube -------------------------------------------------------------
+! unverified — ad slots in home feed, search and watch page
+youtube.com##ytd-ad-slot-renderer
+youtube.com##ytd-in-feed-ad-layout-renderer
+youtube.com###player-ads
+
+! --- Amazon --------------------------------------------------------------
+! unverified — sponsored search results
+amazon.*##[data-component-type="sp-sponsored-result"]
+amazon.*##.AdHolder
+
+! --- X / Twitter ---------------------------------------------------------
+! unverified — promoted tweets are also caught by the "Sponsored" label heuristic
+x.com##[data-testid="placementTracking"]

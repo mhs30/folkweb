@@ -1,0 +1,43 @@
+name: Broken filter
+description: An AI widget, ad or attention trap slipped through, or something useful got hidden.
+labels: ["filter"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks! Open the Folkweb popup on the page first: **Hidden on this page** shows what was hidden and which rule did it.
+        Please don't paste personal data (account names, private feeds) into screenshots.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What happened?
+      options:
+        - Something should be hidden but isn't
+        - Something was hidden that shouldn't be
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      description: A public URL where this happens. Remove any personal or tracking parameters.
+      placeholder: https://www.example.com/search?q=...
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: What should Folkweb do? If something was hidden by mistake, copy the rule shown in the popup.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and Folkweb version
+      placeholder: Chrome 141, Folkweb 0.1.0
+  - type: dropdown
+    id: login
+    attributes:
+      label: Do you need to be logged in to see it?
+      options: ["No", "Yes"]

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Security · Folkweb</title>
+    <meta name="description" content="How Folkweb is built to be safe, and how to report a vulnerability." />
+    <link rel="canonical" href="https://folkweb.org/security/" />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="human-json" href="/human.json" />
+    <link rel="alternate" type="application/rss+xml" title="Folkweb news" href="/feed.xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="inner">
+        <a class="brand" href="/"><img src="/logo.svg" alt="" width="36" height="36" /> <span>Folkweb</span></a>
+        <span class="tagline">the web, by folks</span>
+        <nav aria-label="Main">
+          <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/news/">News</a></li>
+          <li><a href="/privacy/">Privacy</a></li>
+          <li><a href="/curation/">Curation</a></li>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="/security/" aria-current="page">Security</a></li>
+          <li><a href="/ai/">AI policy</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <h1>Security</h1>
+      <p class="lead">Folkweb runs on every page you visit, so a bug in Folkweb would be a bug on every site. Security comes before features.</p>
+
+      <section class="panel">
+        <h2>How Folkweb is built</h2>
+        <ul>
+          <li><strong>Minimal permissions.</strong> Storage and a right-click menu only. Access to a site’s files is requested from you, per site, only when you check an image.</li>
+          <li><strong>No remote code.</strong> Everything that runs ships inside the extension. No eval, no remote scripts, a strict content security policy.</li>
+          <li><strong>Pages are treated as hostile.</strong> Folkweb only writes text into pages, never HTML, and ignores messages from pages.</li>
+          <li><strong>Lists are data, not code.</strong> Filter lists use a safe subset of the uBlock Origin syntax. Anything that could run code or load resources is rejected.</li>
+          <li><strong>Safe networking.</strong> Every request goes through one checked function: no cookies, size and time limits, and no access to local or private addresses.</li>
+          <li><strong>Supply chain.</strong> Exactly pinned dependencies, install scripts disabled, CI actions pinned to commits, and a security scan on every change.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2>Report a vulnerability</h2>
+        <p>Please email <a href="mailto:security@folkweb.org">security@folkweb.org</a>. Don’t open a public issue. Include what you found, how to reproduce it, and the browser and Folkweb version. We aim to reply within 7 days, keep you updated, and credit you if you wish.</p>
+        <p>Good-faith research is welcome: test only with your own data and accounts, don’t harm users or degrade the service, and give us reasonable time to fix before disclosure. We won’t pursue legal action against research that follows these rules.</p>
+        <p>Machine-readable contact details: <a href="/.well-known/security.txt">security.txt</a>.</p>
+      </section>
+
+    </main>
+    <footer class="site-footer">
+      <p>No cookies, no analytics, no JavaScript. · <a href="/news/">News &amp; RSS</a> · <a href="/#site-owners">About human.json</a> · <a href="/ai/">How we use AI</a></p>
+      <p>© 2026 Folkweb contributors. Code under GPL-3.0-or-later, lists under CC BY-SA 4.0.</p>
+    </footer>
+  </body>
+</html>

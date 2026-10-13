@@ -1,0 +1,41 @@
+name: List proposal
+description: Suggest a human-made site to boost, or an AI content farm to block. Evidence required.
+labels: ["lists"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Folkweb lists must earn trust. Read the [curation policy](https://github.com/mhs30/folkweb/blob/main/docs/LIST-FORMAT.md#curation-policy) first.
+        **Evidence, not vibes:** "feels like AI" is not evidence. We judge content, never people, politics or competitors.
+  - type: dropdown
+    id: list
+    attributes:
+      label: Which list?
+      options:
+        - Boost (human-made site)
+        - Block (content farm / mass-generated content)
+    validations:
+      required: true
+  - type: input
+    id: domain
+    attributes:
+      label: Domain
+      placeholder: example.com
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: |
+        Public, reproducible links. Prefer archived copies (web.archive.org).
+        Boost: who runs it, how long, why it's human-made. Block: fabricated authors, recycled text across many pages, mass-generated pages.
+    validations:
+      required: true
+  - type: checkboxes
+    id: conflicts
+    attributes:
+      label: Conflicts of interest
+      options:
+        - label: I don't own, work for or compete with this site (or I've explained my relationship above).
+          required: true

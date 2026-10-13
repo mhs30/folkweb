@@ -1,0 +1,11 @@
+# Title: Folkweb — Block list (AI content farms and slop domains)
+# Description: Domains that are shown behind a calm interstitial and hidden
+#              from search results.
+# Policy (see docs/LIST-FORMAT.md#curation-policy):
+#   - Every addition needs public, reproducible evidence linked in the PR
+#     (e.g. archived pages showing mass AI-generated content, fake authors).
+#   - Judge sites by their content, never by the people behind them.
+#   - No political, competitive or personal disputes. When in doubt, leave it out.
+#   - Removal requests are reviewed with the same weight as additions.
+#
+# Intentionally empty in the first release: entries arrive via reviewed PRs.

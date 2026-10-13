@@ -1,0 +1,17 @@
+# folkweb.org welcomes people, search engines, and AI assistants that answer
+# questions and link back. We ask crawlers that only collect pages for AI
+# training to stay out (see https://folkweb.org/ai/).
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bytespider
+User-agent: meta-externalagent
+User-agent: cohere-training-data-crawler
+User-agent: Diffbot
+Disallow: /
+
+User-agent: *
+Allow: /

@@ -1,0 +1,40 @@
+# Title: Folkweb — Folk boost (human-made web hubs)
+# Description: Sites that are hubs of the independent, human-made web.
+#              Used to mark search results and as the default "Wander" pool.
+# Policy: see docs/LIST-FORMAT.md#curation-policy — a site is added when it is
+#         primarily run by people (not a content farm), has no AI-generated
+#         filler, and the PR states who vouches for it and why.
+
+indieweb.org          # IndieWeb community wiki
+marginalia.nu         # Marginalia search — independent small-web search engine
+search.marginalia.nu
+marginalia-search.com # Marginalia's current home (moved from marginalia.nu)
+ooh.directory         # Human-curated blog directory
+512kb.club            # Lightweight personal sites
+personalsit.es        # Personal sites directory
+blogroll.org          # Human-curated blogrolls
+slashpages.net        # /about, /now, /ai… pages for personal sites
+neocities.org         # Free hosting for handmade sites
+wiby.me               # Search engine for the classic web
+webring.xxiivv.com    # Merveilles webring
+indieblog.page        # Random IndieWeb blog post
+
+# --- Added 2026-10-12 (small-web hubs; evidence in the PR) ---
+1mb.club              # Curated directory of lightweight personal pages, member-submitted, CC BY-SA
+250kb.club            # Curated collection of small, efficient sites, maintained by Norman Köhring
+nownownow.com         # Directory of personal /now pages, curated by Derek Sivers
+xn--sr8hvo.ws         # IndieWeb webring for personal sites (since 2017)
+fediring.net          # Webring of fediverse members' personal sites; membership is reviewed (since 2021)
+hotlinewebring.club   # Webring of personal sites in the spirit of the 90s web
+searchmysite.net      # Independent, ad-free search engine for vetted personal websites (since 2020)
+uses.tech             # Community-submitted list of people's /uses pages
+melonland.net         # Small-web community: forum and guides for handmade sites
+32bit.cafe            # Community for people who make personal websites (since 2022)
+yesterweb.org         # Community about reclaiming the personal web (since 2021)
+
+# --- Added 2026-10-12 (large human-edited references; evidence in the PR) ---
+wikipedia.org         # Encyclopedia written by volunteer editors; community rules against unreviewed AI-generated text
+archive.org           # Internet Archive: nonprofit library and the Wayback Machine
+gutenberg.org         # Project Gutenberg: public-domain books digitised and proofread by volunteers (since 1971)
+openstreetmap.org     # Map of the world made by volunteer mappers
+developer.mozilla.org # MDN Web Docs: web documentation written and reviewed by people

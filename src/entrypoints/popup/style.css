@@ -1,0 +1,7 @@
+body {
+  width: 360px;
+}
+.fw-host {
+  font-weight: bold;
+  word-break: break-all;
+}

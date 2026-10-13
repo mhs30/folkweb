@@ -1,0 +1,34 @@
+! Title: Folkweb — AI surfaces
+! Description: Hides AI assistant panels, AI summaries and AI upsell entry points.
+! Syntax: Folkweb safe subset of uBlock Origin cosmetic filters (see docs/LIST-FORMAT.md).
+! Policy: every rule is scoped to a site, uses the most stable attribute available,
+!         and carries a "verified" date. Unverified rules are marked and must be
+!         checked with the add-site-filter skill before the next release.
+! Note: Google AI Overviews are removed most reliably by the "Web results only"
+!       (udm=14) setting, not by selectors — Google's class names are obfuscated.
+
+! --- Google Search -------------------------------------------------------
+! verified: 2026-10-12 — "AI Mode" tab link (udm=50)
+google.*##a[href*="udm=50"]
+! verified: 2026-10-12 — AI Overview block (fallback when udm=14 is off; jsname may change)
+google.*##div[jsname="CS7uPe"]:has-text(AI Overview)
+
+! --- Bing ----------------------------------------------------------------
+! verified: 2026-10-12 — Copilot tab, Copilot answer panels and composer
+bing.com###b-scopeListItem-copilotsearch
+bing.com###b_sydConvOuter
+bing.com###b_copilot_search_container
+bing.com##.b_copilot_search
+
+! --- DuckDuckGo ----------------------------------------------------------
+! verified: 2026-10-12 — DuckAssist answer inside the results list
+duckduckgo.com##section[data-testid="mainline"] li:has([data-testid="duckassist-answer-content"])
+
+! --- X / Twitter ---------------------------------------------------------
+! unverified (needs login to check)
+x.com##a[href="/i/grok"]
+x.com##button[aria-label="Grok actions"]
+
+! --- Amazon --------------------------------------------------------------
+! unverified — Rufus assistant entry point
+amazon.*###nav-rufus-disco

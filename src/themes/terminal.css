@@ -1,0 +1,32 @@
+/* Terminal — green phosphor on black, monospace everywhere. Glow only on headings, so body
+   text stays crisp. */
+html[data-folkweb-theme="terminal"] {
+  --fw-t-scheme: dark;
+  --fw-t-page: #070b07;
+  --fw-t-bg: #070b07;
+  --fw-t-surface: #0d160d;
+  --fw-t-ink: #4af07f;
+  --fw-t-heading-ink: #8dffb0;
+  --fw-t-muted: #34b862;
+  --fw-t-link: #c4ffd3;
+  --fw-t-visited: #8fd6ff;
+  --fw-t-line: #1d6a37;
+  --fw-t-select-bg: #4af07f;
+  --fw-t-select-ink: #000;
+  --fw-t-font: "SF Mono", ui-monospace, Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  --fw-t-heading: var(--fw-t-font);
+  --fw-t-mono: var(--fw-t-font);
+}
+html[data-folkweb-theme="terminal"] body :is(h1, h2, h3) {
+  text-shadow: 0 0 6px rgba(74, 240, 127, 0.35) !important;
+}
+html[data-folkweb-theme="terminal"] body a {
+  text-decoration-line: underline !important;
+}
+html[data-folkweb-theme="terminal"] body :is(button, select, textarea, input:not([type="checkbox"], [type="radio"])) {
+  border-radius: 0 !important;
+  border-color: var(--fw-t-ink) !important;
+}
+html[data-folkweb-theme="terminal"] img {
+  filter: grayscale(1) sepia(0.5) hue-rotate(70deg) saturate(1.6) brightness(0.9) !important;
+}

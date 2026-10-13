@@ -1,0 +1,49 @@
+/* 2000s Web 2.0 — sky gradient, Verdana and Trebuchet, glossy rounded buttons, white panels
+   and a yellow hover highlight on links. */
+html[data-folkweb-theme="y2k"] {
+  --fw-t-scheme: light;
+  --fw-t-page: linear-gradient(180deg, #cfe3fb 0, #eaf3fe 420px, #f7fbff 100%) fixed;
+  --fw-t-bg: transparent;
+  --fw-t-surface: #ffffff;
+  --fw-t-ink: #1b2533;
+  --fw-t-heading-ink: #1f4e99;
+  --fw-t-muted: #44536a;
+  --fw-t-link: #0a4fbf;
+  --fw-t-visited: #5b2a8e;
+  --fw-t-line: #b9cde8;
+  --fw-t-select-bg: #b5d5ff;
+  --fw-t-select-ink: #0b1a33;
+  --fw-t-font: Verdana, Tahoma, "Lucida Grande", "DejaVu Sans", Arial, sans-serif;
+  --fw-t-heading: "Trebuchet MS", "Lucida Grande", Verdana, sans-serif;
+  --fw-t-mono: Monaco, "Lucida Console", Consolas, monospace;
+}
+html[data-folkweb-theme="y2k"] body :is(h1, h2, h3, h4) {
+  letter-spacing: -0.02em !important;
+  text-shadow: 0 1px 0 #ffffff !important;
+}
+html[data-folkweb-theme="y2k"] body a:hover:not([aria-hidden="true"]):not([class*="icon" i]):not([role="img"]) {
+  background-color: #ffffcc !important;
+}
+html[data-folkweb-theme="y2k"] body :is(aside, fieldset, details):not([aria-hidden="true"]):not([class*="icon" i]):not([role="img"]) {
+  background-color: #ffffff !important;
+  border: 1px solid var(--fw-t-line) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 3px rgba(31, 78, 153, 0.15) !important;
+}
+html[data-folkweb-theme="y2k"] body :is(button, input[type="button"], input[type="submit"], input[type="reset"]) {
+  background-image: linear-gradient(180deg, #ffffff 0%, #e6eefa 49%, #d2def5 50%, #e4ecfb 100%) !important;
+  border: 1px solid #7f9db9 !important;
+  border-radius: 6px !important;
+  color: #1a3a6b !important;
+  text-shadow: 0 1px 0 #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) !important;
+}
+html[data-folkweb-theme="y2k"] body :is(button, input[type="button"], input[type="submit"]):hover {
+  background-image: linear-gradient(180deg, #fffbe6 0%, #ffeeb3 49%, #ffe08a 50%, #fff0bf 100%) !important;
+  border-color: #c9a227 !important;
+}
+html[data-folkweb-theme="y2k"] body :is(input:not([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="radio"]), textarea, select) {
+  border: 1px solid #7f9db9 !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}

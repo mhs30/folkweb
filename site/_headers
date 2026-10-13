@@ -1,0 +1,34 @@
+# Cloudflare Pages response headers for folkweb.org.
+# The site runs no JavaScript and loads nothing from other origins.
+/*
+  Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: no-referrer
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+
+# Public data other tools may read from other origins.
+/human.json
+  Content-Type: application/json; charset=utf-8
+  Access-Control-Allow-Origin: *
+  ! Cross-Origin-Resource-Policy
+  Cross-Origin-Resource-Policy: cross-origin
+
+/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
+  Access-Control-Allow-Origin: *
+  ! Cross-Origin-Resource-Policy
+  Cross-Origin-Resource-Policy: cross-origin
+
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8
+
+# The pages.dev addresses (production alias and every preview) must not be indexed.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

@@ -1,0 +1,21 @@
+name: Bug or idea
+description: Something in Folkweb doesn't work as expected, or you have an idea.
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, or what would you like?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce (for bugs)
+      placeholder: |
+        1. Open ...
+        2. Click ...
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and Folkweb version
+      placeholder: Firefox 142, Folkweb 0.1.0

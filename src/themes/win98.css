@@ -1,0 +1,51 @@
+/* ’98 — a white document like the browsers of the time, silver toolbars with bevelled
+   controls, square corners and a navy title bar on the main heading. */
+html[data-folkweb-theme="win98"] {
+  --fw-t-scheme: light;
+  --fw-t-page: #ffffff;
+  --fw-t-bg: #ffffff;
+  --fw-t-surface: #ffffff;
+  --fw-t-ink: #000000;
+  --fw-t-heading-ink: #000000;
+  --fw-t-muted: #404040;
+  --fw-t-link: #0000ee;
+  --fw-t-visited: #551a8b;
+  --fw-t-line: #808080;
+  --fw-t-select-bg: #000080;
+  --fw-t-select-ink: #ffffff;
+  --fw-t-font: Tahoma, "MS Sans Serif", "Microsoft Sans Serif", Geneva, Verdana, sans-serif;
+  --fw-t-heading: Tahoma, "MS Sans Serif", "Microsoft Sans Serif", Geneva, Verdana, sans-serif;
+  --fw-t-mono: "Courier New", Courier, monospace;
+  scrollbar-color: #c0c0c0 #dfdfdf !important;
+}
+html[data-folkweb-theme="win98"] * {
+  border-radius: 0 !important;
+}
+/* Site chrome (header, navigation, footer) becomes a silver toolbar. */
+html[data-folkweb-theme="win98"] body :is(header, nav, footer):not([aria-hidden="true"]):not([class*="icon" i]):not([role="img"]) {
+  background-color: #c0c0c0 !important;
+}
+html[data-folkweb-theme="win98"] body h1:not([class*="icon" i]) {
+  background: linear-gradient(90deg, #000080, #1084d0) !important;
+  color: #ffffff !important;
+  padding: 2px 6px !important;
+}
+html[data-folkweb-theme="win98"] body h1 :is(a, a *, span, em, strong, b, i):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]) {
+  color: #ffffff !important;
+}
+html[data-folkweb-theme="win98"] body :is(button, input[type="button"], input[type="submit"], input[type="reset"]) {
+  background-color: #c0c0c0 !important;
+  border: none !important;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff, inset -2px -2px #808080, inset 2px 2px #dfdfdf !important;
+  padding: 3px 12px !important;
+}
+html[data-folkweb-theme="win98"] body :is(button, input[type="button"], input[type="submit"]):active {
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px #808080 !important;
+}
+html[data-folkweb-theme="win98"] body :is(input:not([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="radio"]), textarea, select) {
+  border: none !important;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a !important;
+}
+html[data-folkweb-theme="win98"] body :is(fieldset, pre) {
+  border: 2px groove #dfdfdf !important;
+}

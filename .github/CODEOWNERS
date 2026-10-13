@@ -1,0 +1,17 @@
+# Every change needs a maintainer review; the paths below are the security-sensitive ones.
+# Keep in sync with the "ask" paths in scripts/agent-guard.mjs.
+*                       @mhs30
+
+/wxt.config.ts          @mhs30
+/SECURITY.md            @mhs30
+/AGENTS.md              @mhs30
+/package.json           @mhs30
+/package-lock.json      @mhs30
+/.npmrc                 @mhs30
+/eslint.config.js       @mhs30
+/scripts/               @mhs30
+/lists/                 @mhs30
+/.github/               @mhs30
+/src/lib/url-safety.ts  @mhs30
+/src/lib/messages.ts    @mhs30
+/src/lib/filters.ts     @mhs30

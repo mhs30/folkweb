@@ -1,0 +1,21 @@
+node_modules
+.output
+.wxt
+coverage
+web-ext.config.ts
+*.log
+
+# Local secrets — never commit
+.env
+.env.*
+*.pem
+*.key
+
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# Playwright
+test-results/
+playwright-report/

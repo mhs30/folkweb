@@ -1,0 +1,15 @@
+! Title: Folkweb — Calm (attention traps and vanity metrics)
+! Description: Hides engagement counters and infinite short-video shelves.
+!              Enabled by the "Hide counts and attention traps" setting.
+! Syntax: Folkweb safe subset of uBlock Origin cosmetic filters (see docs/LIST-FORMAT.md).
+
+! --- YouTube -------------------------------------------------------------
+! unverified — Shorts shelves on home and search
+youtube.com##ytd-reel-shelf-renderer
+youtube.com##ytd-rich-shelf-renderer[is-shorts]
+! unverified — subscriber count under the channel name
+youtube.com###owner-sub-count
+
+! --- X / Twitter ---------------------------------------------------------
+! unverified — reply/repost/like/view counters
+x.com##[data-testid="app-text-transition-container"]

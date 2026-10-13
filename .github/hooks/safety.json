@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "node scripts/agent-guard.mjs",
+        "timeout": 10
+      }
+    ]
+  }
+}

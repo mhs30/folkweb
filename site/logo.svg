@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Folkweb">
+  <defs>
+    <linearGradient id="tile" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="128">
+      <stop offset="0" stop-color="#f27a45"/>
+      <stop offset="1" stop-color="#d24a26"/>
+    </linearGradient>
+    <clipPath id="cut"><rect width="128" height="106"/></clipPath>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="url(#tile)"/>
+  <g fill="#ffe2d2"><circle cx="34" cy="61" r="13"/><circle cx="34" cy="116" r="25" clip-path="url(#cut)"/><circle cx="94" cy="61" r="13"/><circle cx="94" cy="116" r="25" clip-path="url(#cut)"/></g>
+  <g fill="url(#tile)" stroke="url(#tile)" stroke-width="9"><circle cx="64" cy="47" r="17.5"/><circle cx="64" cy="117" r="30" clip-path="url(#cut)"/></g>
+  <g fill="#ffffff"><circle cx="64" cy="47" r="17.5"/><circle cx="64" cy="117" r="30" clip-path="url(#cut)"/></g>
+</svg>

@@ -1,0 +1,43 @@
+{
+  "name": "folkweb",
+  "description": "Folkweb — the web, by folks. Human signals you can see, curators you choose, and a calmer, retro web.",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "prepare:wxt": "wxt prepare",
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox --mv3",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox --mv3",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox --mv3",
+    "compile": "wxt prepare && tsc --noEmit",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "lint:lists": "vitest run tests/lists.test.ts",
+    "security": "node scripts/security-scan.mjs",
+    "check": "npm run compile && npm run lint && npm run test && npm run build && npm run test:e2e && npm run lint:firefox && npm run security",
+    "lint:firefox": "npm run build:firefox && npx --yes web-ext@10.5.0 lint -s .output/firefox-mv3 --self-hosted",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
+    "eslint": "10.12.0",
+    "eslint-plugin-no-unsanitized": "4.1.5",
+    "globals": "17.13.0",
+    "happy-dom": "21.0.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.1",
+    "vitest": "5.0.3",
+    "wxt": "0.21.4"
+  },
+  "dependencies": {
+    "@contentauth/c2pa-wasm": "0.13.2"
+  }
+}

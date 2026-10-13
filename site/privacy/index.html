@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Privacy · Folkweb</title>
+    <meta name="description" content="Folkweb collects nothing: no accounts, no analytics, no servers that see your browsing." />
+    <link rel="canonical" href="https://folkweb.org/privacy/" />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="human-json" href="/human.json" />
+    <link rel="alternate" type="application/rss+xml" title="Folkweb news" href="/feed.xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="inner">
+        <a class="brand" href="/"><img src="/logo.svg" alt="" width="36" height="36" /> <span>Folkweb</span></a>
+        <span class="tagline">the web, by folks</span>
+        <nav aria-label="Main">
+          <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/news/">News</a></li>
+          <li><a href="/privacy/" aria-current="page">Privacy</a></li>
+          <li><a href="/curation/">Curation</a></li>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="/security/">Security</a></li>
+          <li><a href="/ai/">AI policy</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <h1>Privacy</h1>
+      <p class="lead">Short version: Folkweb collects nothing. There are no accounts, no analytics and no Folkweb servers that see your browsing.</p>
+      <p class="muted">Last updated 12 October 2026.</p>
+
+      <section class="panel">
+        <h2>The browser extension</h2>
+        <table>
+          <thead><tr><th scope="col">What</th><th scope="col">Where it goes</th></tr></thead>
+          <tbody>
+            <tr><td>Your settings, boost and block lists, trust circle</td><td>Stored only in your browser (<code>storage.local</code>). Never sent anywhere. Removing the extension deletes them.</td></tr>
+            <tr><td>The pages you visit</td><td>Read inside your browser to hide clutter, mark search results and apply themes. Nothing about them is sent to us or anyone else.</td></tr>
+            <tr><td>A site’s own <code>human.json</code></td><td>When a page links one on the same site, Folkweb fetches it from that site, without cookies. The site sees an ordinary request, as when you load an image.</td></tr>
+            <tr><td>Content Credentials checks</td><td>Only when you right-click an image and ask. Folkweb asks permission for that site, then downloads the file from where it already is, without cookies, and reads it on your device.</td></tr>
+            <tr><td>Usage data, crash reports, analytics</td><td>None. Folkweb has no telemetry of any kind. Firefox’s listing declares “no data collection”.</td></tr>
+          </tbody>
+        </table>
+        <p>Folkweb contains no AI models and sends nothing to AI services.</p>
+      </section>
+
+      <section class="panel">
+        <h2>This website</h2>
+        <p>folkweb.org sets no cookies and runs no JavaScript, analytics or third-party embeds. It is hosted on <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a>, which, like any web host, processes your IP address and request details to deliver pages and stop attacks. We don’t receive or keep visitor logs.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Email</h2>
+        <p>If you write to us, we use your message only to reply. Mail to folkweb.org addresses is forwarded by Cloudflare Email Routing to the maintainer’s inbox.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Questions</h2>
+        <p>Email <a href="mailto:hello@folkweb.org">hello@folkweb.org</a>. If this policy changes, the change and its date will appear here and in the <a href="/news/">news</a>.</p>
+      </section>
+
+    </main>
+    <footer class="site-footer">
+      <p>No cookies, no analytics, no JavaScript. · <a href="/news/">News &amp; RSS</a> · <a href="/#site-owners">About human.json</a> · <a href="/ai/">How we use AI</a></p>
+      <p>© 2026 Folkweb contributors. Code under GPL-3.0-or-later, lists under CC BY-SA 4.0.</p>
+    </footer>
+  </body>
+</html>

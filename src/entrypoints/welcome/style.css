@@ -1,0 +1,12 @@
+main { max-width: 760px; margin: 0 auto 20px; }
+footer.fw-footer { max-width: 760px; margin: 0 auto; }
+.fw-lead { font-size: 15px; line-height: 1.55; margin: 0; }
+.fw-two { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+@media (max-width: 640px) { .fw-two { grid-template-columns: 1fr; } }
+.fw-list { margin: 0; padding-left: 0; list-style: none; }
+.fw-list li { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px dotted var(--fw-line); }
+.fw-list li:last-child { border-bottom: 0; }
+.fw-list .fw-icon { width: 20px; flex: none; text-align: center; }
+.fw-step { counter-increment: step; }
+.fw-step h2::before { content: counter(step) ". "; color: var(--fw-muted); }
+main { counter-reset: step; }
