@@ -1,6 +1,6 @@
 import { browser } from 'wxt/browser';
 import { normalizeDomain } from '../../lib/domains';
-import { claimCoversPage, parseHumanJson } from '../../lib/human-json';
+import { claimCoversPage, claimFitsSpace, parseHumanJson } from '../../lib/human-json';
 import { HIDE_KIND_INFO, isHideKind } from '../../lib/hidden-report';
 import { sanitizePageSignals, type GetSignalsMessage, type PageSignals, type RevealHiddenMessage } from '../../lib/messages';
 import { THEME_LABELS, THEMES, TRUSTED_MODE_LABELS, TRUSTED_MODES, type Settings, type ThemeId, type TrustedMode } from '../../lib/settings';
@@ -47,7 +47,7 @@ function trustSignals(s: PageSignals): HTMLLIElement[] {
       out.push(signal('⚪', 'No human signals found. That alone says nothing bad about it.'));
   }
   const hj = s.humanJson;
-  if (hj.status === 'out-of-scope') out.push(signal('⚠️', `human.json claims a different site (${hj.declared}); ignored.`, 'fw-warn'));
+  if (hj.status === 'out-of-scope') out.push(signal('⚠️', `human.json claims a scope that doesn’t fit this page (${hj.declared}); ignored.`, 'fw-warn'));
   if (hj.status === 'invalid') out.push(signal('⚠️', `human.json could not be read: ${hj.reason}`, 'fw-warn'));
   if (hj.status === 'cross-origin') out.push(signal('ℹ️', 'human.json is hosted on another site (support coming soon).'));
   return out;
@@ -109,9 +109,10 @@ function render(tabId: number, s: PageSignals, settings: Settings, outdated: boo
   const actions = h('div', { class: 'fw-actions' });
 
   if (s.humanJson.status === 'found' && s.trust.level !== 'seed') {
-    const doc = s.humanJson.doc;
+    const { doc, href } = s.humanJson;
+    const scope = doc.url.replace(/^https?:\/\//, '');
     actions.append(
-      h('button', { class: 'fw-primary', title: 'Add as a seed of your trust circle', on: { click: () => trustSite(doc) } }, 'Trust this site'),
+      h('button', { class: 'fw-primary', title: `Add ${scope} as a seed of your trust circle`, on: { click: () => trustSite(doc, href) } }, `Trust ${scope}`),
     );
   }
   if (s.trust.level === 'seed') {
@@ -154,11 +155,12 @@ function render(tabId: number, s: PageSignals, settings: Settings, outdated: boo
   );
 }
 
-async function trustSite(doc: { version: string; url: string; vouches: Array<{ url: string; vouchedAt?: string }> }): Promise<void> {
+async function trustSite(doc: { version: string; url: string; vouches: Array<{ url: string; vouchedAt?: string }> }, documentUrl: string): Promise<void> {
   // Re-validate: data crossed from a content script that read it from a web page.
   const parsed = parseHumanJson({ version: doc.version, url: doc.url, vouches: doc.vouches.map((v) => ({ url: v.url, vouched_at: v.vouchedAt })) });
   const current = await getSignals();
   if (!parsed.ok || !current || !claimCoversPage(parsed.doc, current.signals.url)) return;
+  if (!claimFitsSpace(parsed.doc, current.signals.url, documentUrl)) return;
   await saveTrust(addSeed(await loadTrust(), parsed.doc));
   await refresh();
 }
