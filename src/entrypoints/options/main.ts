@@ -231,7 +231,7 @@ function trustedModePanel(): HTMLElement {
     h(
       'p',
       { class: 'fw-muted' },
-      'Trusted sources are sites on your boost lists (Folkweb’s and yours) and whole sites in your trust circle. “Only” mode puts a note above the results with a button to show everything, so you are never stuck with an empty page. Folkweb never judges a site as AI; it only follows the lists and people you chose. Note: when this is on, the search engine’s own page can see which results Folkweb marked, faded or hid.',
+      'Trusted sources are sites on your boost lists (Folkweb’s and yours) and whole sites in your trust circle. “Only” mode puts a note above the results with a button to show everything, so you are never stuck with an empty page. Folkweb never judges a site as AI; it only follows the lists and people you chose. Note: Folkweb’s marks are part of the results page, so Google, DuckDuckGo and Bing can see which results it marked with ★, faded or hid. Folkweb only marks results on those search engines’ own sites.',
     ),
   );
 }
