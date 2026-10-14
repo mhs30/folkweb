@@ -102,6 +102,28 @@ describe('site pages', () => {
     const css = readFileSync(join(SITE, 'style.css'), 'utf8');
     expect(css).not.toMatch(/url\s*\(|@import|@font-face/i);
   });
+
+  it('donation links on /support match .github/FUNDING.yml and use only the known platforms', () => {
+    const funding = Object.fromEntries(
+      readFileSync(join(SITE, '..', '.github', 'FUNDING.yml'), 'utf8')
+        .split('\n')
+        .map((l) => /^(\w+):\s*(\S+)\s*$/.exec(l))
+        .filter((m): m is RegExpExecArray => m !== null)
+        .map((m) => [m[1], m[2]]),
+    );
+    const urlFor: Record<string, (handle: string) => string> = {
+      github: (h) => `https://github.com/sponsors/${h}`,
+      ko_fi: (h) => `https://ko-fi.com/${h}`,
+      liberapay: (h) => `https://liberapay.com/${h}/`,
+    };
+    const platforms = Object.keys(funding);
+    expect(platforms.length).toBeGreaterThan(0);
+    for (const p of platforms) expect(Object.keys(urlFor)).toContain(p);
+    const expected = Object.entries(urlFor).flatMap(([p, url]) => (funding[p] ? [url(funding[p])] : []));
+    const donate = parse(join(SITE, 'support', 'index.html')).getElementById('donate');
+    const links = [...(donate?.querySelectorAll('a[href]') ?? [])].map((a) => a.getAttribute('href'));
+    expect(links).toEqual(expected);
+  });
 });
 
 describe('site data files', () => {

@@ -6,7 +6,14 @@
     <atom:link href="https://folkweb.org/feed.xml" rel="self" type="application/rss+xml" />
     <description>News about Folkweb, the browser extension for a web made by people.</description>
     <language>en</language>
-    <lastBuildDate>Mon, 12 Oct 2026 12:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 14 Oct 2026 12:00:00 +0200</lastBuildDate>
+    <item>
+      <title>You can now support Folkweb</title>
+      <link>https://folkweb.org/support/</link>
+      <guid isPermaLink="false">folkweb-2026-10-14-support</guid>
+      <pubDate>Wed, 14 Oct 2026 12:00:00 +0200</pubDate>
+      <description>Folkweb stays free and complete for everyone. You can now donate through Ko-fi or Liberapay, with GitHub Sponsors to follow. Donations are gifts: no perks, and no say over the lists. Every year we'll publish what came in and what it paid for. The privacy policy now explains what we see when you donate.</description>
+    </item>
     <item>
       <title>Folkweb is being built</title>
       <link>https://folkweb.org/</link>
