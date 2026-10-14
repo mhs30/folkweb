@@ -100,6 +100,13 @@ Bug reports, broken filters, list proposals with evidence and code are all welco
 with [CONTRIBUTING.md](CONTRIBUTING.md). Please report vulnerabilities privately (see
 [SECURITY.md](SECURITY.md)). Everyone follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
+## Support
+
+Folkweb is free and complete, with no ads, paid features or data collection, and it stays
+that way. If it's useful to you, you can donate through GitHub Sponsors, Ko-fi or Liberapay:
+see [folkweb.org/support](https://folkweb.org/support/) for the options, how money is handled,
+and the yearly income and costs summary. Donations are gifts and never influence the lists.
+
 ## License
 
 - Code: [GPL-3.0-or-later](LICENSE). Forks and modified versions must stay open source.

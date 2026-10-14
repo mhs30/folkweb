@@ -102,6 +102,25 @@ describe('site pages', () => {
     const css = readFileSync(join(SITE, 'style.css'), 'utf8');
     expect(css).not.toMatch(/url\s*\(|@import|@font-face/i);
   });
+
+  it('donation links on /support match .github/FUNDING.yml and use only the three platforms', () => {
+    const funding = Object.fromEntries(
+      readFileSync(join(SITE, '..', '.github', 'FUNDING.yml'), 'utf8')
+        .split('\n')
+        .map((l) => /^(\w+):\s*(\S+)\s*$/.exec(l))
+        .filter((m): m is RegExpExecArray => m !== null)
+        .map((m) => [m[1], m[2]]),
+    );
+    expect(Object.keys(funding).sort()).toEqual(['github', 'ko_fi', 'liberapay']);
+    const expected = [
+      `https://github.com/sponsors/${funding.github}`,
+      `https://ko-fi.com/${funding.ko_fi}`,
+      `https://liberapay.com/${funding.liberapay}/`,
+    ];
+    const donate = parse(join(SITE, 'support', 'index.html')).getElementById('donate');
+    const links = [...(donate?.querySelectorAll('a[href]') ?? [])].map((a) => a.getAttribute('href'));
+    expect(links).toEqual(expected);
+  });
 });
 
 describe('site data files', () => {
