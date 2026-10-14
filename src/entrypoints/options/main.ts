@@ -263,6 +263,18 @@ async function render(): Promise<void> {
       h('h2', {}, 'Privacy'),
       h('p', {}, 'Folkweb has no servers, no accounts and no analytics. Settings, lists and your trust circle live only in this browser. When you open the toolbar popup on a page that links a human.json on the same site, Folkweb fetches it without cookies. Content Credentials checks fetch the media file directly, without cookies, only when you ask. Folkweb does not block trackers or cookie banners; use your browser’s tracking protection or uBlock Origin alongside it.'),
     ),
+    h(
+      'section',
+      { class: 'fw-panel' },
+      h('h2', {}, 'Support Folkweb'),
+      h(
+        'p',
+        {},
+        'Folkweb is free and complete, with no ads or paid features, and it stays that way. If it’s useful to you, you can help keep it going: ',
+        extLink('https://folkweb.org/support/', 'folkweb.org/support'),
+        '.',
+      ),
+    ),
   );
 }
 

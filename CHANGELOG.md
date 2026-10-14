@@ -17,6 +17,7 @@ Not released to any store yet. Planned as **0.2.0**, the first public release.
 - **Content Credentials:** right-click any image, video or audio to read its C2PA credentials, on your device.
 - **Calm and looks:** no autoplay, still pages, optional grayscale, and four themes (Newsprint, Terminal, ’98, 2000s Web 2.0) built on a shared palette so dark-mode sites stay readable.
 - **Welcome page** on first install; **Share and back up**: export and import lists, and create a `human.json` for your own website.
+- **Support Folkweb:** one calm link at the bottom of Settings to folkweb.org/support. Nowhere else: no popups, no nags.
 - **folkweb.org:** a script-free site with privacy, curation, security and AI policy pages.
 
 ### Security
