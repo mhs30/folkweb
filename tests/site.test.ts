@@ -119,7 +119,7 @@ describe('site pages', () => {
     const platforms = Object.keys(funding);
     expect(platforms.length).toBeGreaterThan(0);
     for (const p of platforms) expect(Object.keys(urlFor)).toContain(p);
-    const expected = Object.keys(urlFor).filter((p) => p in funding).map((p) => urlFor[p](funding[p]));
+    const expected = Object.entries(urlFor).flatMap(([p, url]) => (funding[p] ? [url(funding[p])] : []));
     const donate = parse(join(SITE, 'support', 'index.html')).getElementById('donate');
     const links = [...(donate?.querySelectorAll('a[href]') ?? [])].map((a) => a.getAttribute('href'));
     expect(links).toEqual(expected);
