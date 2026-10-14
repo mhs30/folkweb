@@ -103,7 +103,7 @@ with [CONTRIBUTING.md](CONTRIBUTING.md). Please report vulnerabilities privately
 ## Support
 
 Folkweb is free and complete, with no ads, paid features or data collection, and it stays
-that way. If it's useful to you, you can donate through GitHub Sponsors, Ko-fi or Liberapay:
+that way. If it's useful to you, you can donate through Ko-fi or Liberapay (GitHub Sponsors soon):
 see [folkweb.org/support](https://folkweb.org/support/) for the options, how money is handled,
 and the yearly income and costs summary. Donations are gifts and never influence the lists.
 
