@@ -21,6 +21,7 @@ test('every extension page renders', async ({ folkweb }) => {
 
   await page.goto(`${base}/options.html`);
   await expect(page.getByRole('heading', { name: 'Share and back up' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'folkweb.org/support' })).toHaveAttribute('href', 'https://folkweb.org/support/');
 
   await page.goto(`${base}/blocked.html?u=${encodeURIComponent('https://slop.e2e.test/')}&m=slop.e2e.test`);
   await expect(page.getByText('Let’s take a different path')).toBeVisible();
