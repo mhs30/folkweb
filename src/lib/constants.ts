@@ -29,4 +29,6 @@ export const PROJECT_LINKS = {
   aiPolicy: 'https://folkweb.org/ai/',
   humanJson: 'https://codeberg.org/robida/human.json',
   contentCredentials: 'https://contentcredentials.org',
+  source: 'https://github.com/mhs30/folkweb',
+  reportFilter: 'https://github.com/mhs30/folkweb/issues/new?template=broken-filter.yml',
 } as const;
