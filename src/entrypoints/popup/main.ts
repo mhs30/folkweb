@@ -1,6 +1,7 @@
 import { browser } from 'wxt/browser';
 import { normalizeDomain } from '../../lib/domains';
 import { claimCoversPage, claimFitsSpace, parseHumanJson } from '../../lib/human-json';
+import { PROJECT_LINKS } from '../../lib/constants';
 import { HIDE_KIND_INFO, isHideKind } from '../../lib/hidden-report';
 import { sanitizePageSignals, type GetSignalsMessage, type PageSignals, type RevealHiddenMessage } from '../../lib/messages';
 import { THEME_LABELS, THEMES, TRUSTED_MODE_LABELS, TRUSTED_MODES, type Settings, type ThemeId, type TrustedMode } from '../../lib/settings';
@@ -82,6 +83,8 @@ function hiddenPanel(tabId: number, s: PageSignals): HTMLElement | null {
     h('h2', {}, `🧹 Hidden on this page (${s.hiddenTotal})`),
     ...groups,
     h('div', { class: 'fw-actions' }, action),
+    // A plain link: nothing about this page is sent unless the person writes it in the form.
+    h('p', { class: 'fw-muted' }, 'Something hidden that shouldn’t be, or missed? ', extLink(PROJECT_LINKS.reportFilter, 'Report a problem'), '.'),
   );
 }
 
