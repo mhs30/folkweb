@@ -40,7 +40,7 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: 'none',
   calm: { noAnimations: true, noAutoplay: true, demetricate: false, grayscale: false },
   declutter: { aiSurfaces: true, sponsored: true, sponsoredHeuristic: true },
-  search: { googleWebOnly: true, annotate: true, hideBlocked: true, trustedMode: 'off' },
+  search: { googleWebOnly: false, annotate: true, hideBlocked: true, trustedMode: 'off' },
   blockPages: true,
   disabledSites: [],
   userBlock: [],

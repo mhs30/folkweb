@@ -18,7 +18,7 @@ judge whether something is human.
 | Calm & retro | Demetricator, News Feed Eradicator, 98.css | Built in, including a 2000s Web 2.0 theme |
 | "AI detectors" | Various | **We deliberately don't build one.** They are unreliable and erode trust |
 
-## v0.1 — Foundation ✅ (this release)
+## v0.2.0 — Foundation ✅ (first public release)
 
 - [x] WXT MV3 extension for Chrome and Firefox, strict CSP, minimal permissions
 - [x] Themes: Newsprint, Terminal, ’98, **2000s Web 2.0**, plus the calm layer (still pages, no autoplay, grayscale)
@@ -31,7 +31,7 @@ judge whether something is human.
 - [x] Security gate, unit tests, Mozilla addons-linter clean
 - [x] AI-agent instructions, skills, guard hooks, security-review agent
 
-## v0.1.1 — Transparency ✅
+## v0.2.0 (part 2) — Transparency ✅
 
 - [x] "Hidden on this page" report in the popup: what was hidden, grouped by reason, with a text preview and the rule
 - [x] *Show them on the page*: outline instead of hide, until reload
@@ -54,7 +54,7 @@ Candidates, roughly in order of value and effort:
 - [ ] **Translate the small web:** read personal sites in other languages, on-device
 - [ ] **Curator helper:** draft evidence for list proposals, for a person to review
 
-## v0.2 — Trust graph & lists
+## v0.3 — Trust graph & lists
 
 - [ ] Cross-origin human.json and 2–3 hop trust crawling (optional host permissions, cached, polite crawling per spec)
 - [ ] Remote list subscriptions with **Ed25519-signed** lists (WebCrypto), plus a list directory
@@ -65,14 +65,14 @@ Candidates, roughly in order of value and effort:
 - [ ] Trusted-source marks beyond search: ★ next to links to trusted sites on any page (Hacker News, Reddit, blogs)
 - [ ] Privacy card in the popup: which other companies' scripts a page loads (a fact, not a score)
 
-## v0.3 — Front porch
+## v0.4 — Front porch
 
 - [ ] **Front porch** new-tab page: chronological RSS from your trust circle, no algorithm
 - [ ] Webring bar: previous / next / random across human.json vouches
 - [ ] Creator kit: generate `human.json`, an `/ai` page, a blogroll and a webring snippet, plus C2PA signing guidance
 - [ ] Reader mode with themes (Mozilla Readability)
 
-## v0.4 — Community
+## v0.5 — Community
 
 - [ ] AT Protocol integration: follow Bluesky labelers and lists as curators
 - [ ] Public curator list registry (PR-governed), with abuse and removal process

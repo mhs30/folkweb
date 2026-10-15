@@ -2,7 +2,7 @@
   "name": "folkweb",
   "description": "Folkweb — the web, by folks. Human signals you can see, curators you choose, and a calmer, retro web.",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "GPL-3.0-or-later",
   "engines": {
