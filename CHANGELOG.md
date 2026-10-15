@@ -6,7 +6,14 @@ generated from this file (`scripts/release-notes.mjs`).
 
 ## [Unreleased]
 
-Not released to any store yet. Planned as **0.2.0**, the first public release.
+## [0.2.0] - 2026-10-15
+
+The first public release, for Firefox (desktop) and Microsoft Edge.
+
+### Changed
+- Google "Web results" (no AI Overviews) is now **off by default**; turn it on in the welcome page or Settings.
+- Some filter rules (YouTube, X, Amazon, LinkedIn, Reddit, Facebook) are marked *unverified*: they were not yet checked on the real sites while logged in. If one hides the wrong thing or misses something, use **Report a problem** in the popup.
+- Firefox for Android is not supported yet.
 
 ### Added
 - **Human signals:** reads a site's `human.json`, lets you trust sites and see the sites they vouch for; shows feeds and `/ai` pages.
