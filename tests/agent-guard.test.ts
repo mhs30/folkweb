@@ -174,6 +174,20 @@ describe('agent guard hook', () => {
     });
 
     it.each([
+      ["bash -lc 'git -C . push --force origin main'", 'deny'],
+      ["bash -lc 'git -C . checkout -- SECURITY.md'", 'ask'],
+      ["git -C '' push --force origin main", 'deny'],
+      ["git -C \"\" push --force origin main", 'deny'],
+      ["git -C '' checkout -- SECURITY.md", 'ask'],
+      ["git -C \"\" checkout -- SECURITY.md", 'ask'],
+      ['git -c "foo.bar=$(git -C . push --force origin main)" status', 'deny'],
+      ['git -c "foo.bar=`npm publish`" status', 'deny'],
+      ["npm publish # maintainer's release", 'deny'],
+    ])('guards nested shell commands and empty option values: %s', (cmd, expected) => {
+      expect(decide(shell(cmd))).toBe(expected);
+    });
+
+    it.each([
       ['git -c alias.x=one; git push --force origin main', 'deny'],
       ['git -c alias.x=one; push --force origin main', null],
       ['git -c alias.x=one && git checkout -- SECURITY.md', 'ask'],
