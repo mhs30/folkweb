@@ -1,16 +1,12 @@
 import baseCss from '../themes/base.css?raw';
 import calmCss from '../themes/calm.css?raw';
 import newsprintCss from '../themes/newsprint.css?raw';
-import terminalCss from '../themes/terminal.css?raw';
-import win98Css from '../themes/win98.css?raw';
 import y2kCss from '../themes/y2k.css?raw';
 import type { Settings, ThemeId } from '../lib/settings';
 import { removeStyle, upsertStyle } from './dom';
 
 const THEME_CSS: Record<Exclude<ThemeId, 'none'>, string> = {
   newsprint: newsprintCss,
-  terminal: terminalCss,
-  win98: win98Css,
   y2k: y2kCss,
 };
 

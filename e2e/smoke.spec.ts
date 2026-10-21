@@ -34,6 +34,57 @@ test('every extension page renders', async ({ folkweb }) => {
   await page.close();
 });
 
+test('retro themes preserve sticky navigation, floating menus, lists, and images', async ({ folkweb }) => {
+  const page = await folkweb.context.newPage();
+  for (const theme of ['newsprint', 'y2k']) {
+    await folkweb.setSettings({ theme });
+    await page.goto('https://blog.e2e.test/theme');
+    await expect(page.locator('html')).toHaveAttribute('data-folkweb-theme', theme);
+
+    const layout = await page.evaluate(() => {
+      const style = (selector: string) => getComputedStyle(document.querySelector(selector)!);
+      return {
+        header: [style('#sticky').position, style('#sticky').backgroundColor, style('#sticky').boxShadow],
+        navLink: style('#sticky a').color,
+        menu: [style('#menu').position, style('#menu').backgroundColor, style('#menu').boxShadow],
+        aside: [style('#floating-list').float, style('#floating-list').backgroundColor],
+        list: [style('#list').listStyleType, style('#list-item').backgroundColor],
+        imageFilter: style('#avatar').filter,
+        iconFont: style('#icon').fontFamily,
+      };
+    });
+    expect(layout.header[0]).toBe('fixed');
+    expect(layout.header[1]).toBe('rgb(38, 56, 74)');
+    expect(layout.header[2]).not.toBe('none');
+    expect(layout.navLink).toBe('rgb(255, 255, 255)');
+    expect(layout.menu[0]).toBe('fixed');
+    expect(layout.menu[1]).toBe('rgb(231, 237, 242)');
+    expect(layout.menu[2]).not.toBe('none');
+    expect(layout.aside).toEqual(['right', 'rgb(238, 242, 246)']);
+    expect(layout.list).toEqual(['square', 'rgb(240, 240, 240)']);
+    expect(layout.imageFilter).toBe('none');
+    expect(layout.iconFont).toBe('monospace');
+
+    await page.locator('html').evaluate((html) => html.setAttribute('data-color-mode', 'dark'));
+    await expect.poll(() => page.locator('body').evaluate((body) => getComputedStyle(body).colorScheme)).toBe('dark');
+    const dark = await page.evaluate(() => ({
+      menu: getComputedStyle(document.querySelector('#menu')!).backgroundColor,
+      list: getComputedStyle(document.querySelector('#list-item')!).backgroundColor,
+      ink: getComputedStyle(document.body).color,
+    }));
+    expect(dark.menu).toBe('rgb(28, 49, 80)');
+    expect(dark.list).toBe('rgb(28, 49, 80)');
+    expect(dark.ink).toBe(theme === 'newsprint' ? 'rgb(245, 240, 230)' : 'rgb(241, 246, 255)');
+
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.locator('html').evaluate((html) => html.setAttribute('data-color-mode', 'auto'));
+    await expect.poll(() => page.locator('body').evaluate((body) => getComputedStyle(body).colorScheme)).toBe('dark');
+    await page.emulateMedia({ colorScheme: 'light' });
+    await expect.poll(() => page.locator('body').evaluate((body) => getComputedStyle(body).colorScheme)).toBe('light');
+  }
+  await page.close();
+});
+
 test('a page: hides clutter, shows human signals, explains and reveals', async ({ folkweb }) => {
   await folkweb.setSettings({ customFilters: 'blog.e2e.test##.newsletter-box' });
   const tab = await folkweb.context.newPage();
@@ -59,10 +110,13 @@ test('a page: hides clutter, shows human signals, explains and reveals', async (
 });
 
 test('search: AI panel and blocked results hidden, trusted results badged, "only trusted" can be undone', async ({ folkweb }) => {
-  await folkweb.setSettings({ userBlock: ['slop.e2e.test'], search: { trustedMode: 'only' } });
+  await folkweb.setSettings({ theme: 'y2k', userBlock: ['slop.e2e.test'], search: { trustedMode: 'only' } });
   const tab = await folkweb.context.newPage();
   await tab.goto('https://www.bing.com/search?q=css+grid');
 
+  await expect(tab.locator('html')).toHaveAttribute('data-folkweb-theme', 'y2k');
+  expect(await tab.locator('#b_results').evaluate((list) => getComputedStyle(list).listStyleType)).toBe('decimal');
+  expect(await tab.locator('#r-indieweb').evaluate((result) => getComputedStyle(result).backgroundColor)).toBe('rgb(240, 240, 240)');
   await expect(tab.locator('#b_copilot_search_container')).toBeHidden();
   await expect(tab.locator('#r-slop')).toBeHidden();
   await expect(tab.locator('#r-indieweb [data-folkweb-badge]')).toHaveText('★ folk');

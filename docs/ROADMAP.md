@@ -15,13 +15,13 @@ judge whether something is human.
 | Flagging slop | Kagi SlopStop (inside Kagi only) | Works on any search engine and any site, with no account |
 | Human web of trust | human.json + its verifier extension | Seeds, vouches, Wander and search badges in one place |
 | Media provenance | Digimarc C2PA extension | Honest three-way verdicts tied to the human-signals card |
-| Calm & retro | Demetricator, News Feed Eradicator, 98.css | Built in, including a 2000s Web 2.0 theme |
+| Calm & retro | Demetricator, News Feed Eradicator, 98.css | Two built-in looks: Calm reading and 2000s Web 2.0 |
 | "AI detectors" | Various | **We deliberately don't build one.** They are unreliable and erode trust |
 
 ## v0.2.0 — Foundation ✅ (first public release)
 
 - [x] WXT MV3 extension for Chrome and Firefox, strict CSP, minimal permissions
-- [x] Themes: Newsprint, Terminal, ’98, **2000s Web 2.0**, plus the calm layer (still pages, no autoplay, grayscale)
+- [x] Themes shipped in v0.2.0: Newsprint, Terminal, ’98, and **2000s Web 2.0**; now narrowed to Calm reading and 2000s Web 2.0, plus the calm layer (still pages, no autoplay, grayscale)
 - [x] Safe filter engine (uBlock subset + `:has-text`), verified AI-surface, sponsored and calm lists
 - [x] Sponsored-label heuristic for feeds
 - [x] Google "Web results" (udm=14) routing; search annotation and hiding for Google, DuckDuckGo and Bing

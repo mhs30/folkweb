@@ -19,6 +19,7 @@ function route(host: string, path: string): { type: string; body: string } | nul
   const page = (name: string) => ({ type: 'text/html; charset=utf-8', body: readFileSync(join(PAGES, name), 'utf8') });
   if (host === 'blog.e2e.test') {
     if (path === '/') return page('article.html');
+    if (path === '/theme') return page('theme.html');
     if (path === '/human.json') return { type: 'application/json', body: JSON.stringify({ version: '0.1.1', url: 'https://blog.e2e.test', vouches: [] }) };
     if (path === '/feed.xml') return { type: 'application/rss+xml', body: '<?xml version="1.0"?><rss version="2.0"><channel><title>Blog</title></channel></rss>' };
     if (path === '/ai/') return page('plain.html');

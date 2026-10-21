@@ -6,6 +6,10 @@ generated from this file (`scripts/release-notes.mjs`).
 
 ## [Unreleased]
 
+### Changed
+- Narrow page themes to Calm reading and 2000s Web 2.0; preserve site-authored navigation, floating menus, list styling, component surfaces, and images.
+- Adapt both themes to GitHub's selected dark appearance while maintaining readable palette contrast.
+
 ## [0.2.0] - 2026-10-15
 
 The first public release, for Firefox (desktop) and Microsoft Edge.

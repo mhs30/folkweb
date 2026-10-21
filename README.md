@@ -24,7 +24,7 @@ trust, and quiets the noise in between.
 | 🧹 | **Declutter, your way** | Hides the AI panels, AI summaries and sponsored modules you didn't ask for (each one a setting) with a safe, verified filter list. Google searches open as plain "Web" results (no AI Overviews). The popup lists **what was hidden on the page and why**, and can show it all again with a dashed outline. |
 | 📷 | **Content Credentials** | Right-click any image, video or audio → *Check Content Credentials* reads [C2PA](https://c2pa.org) provenance: captured by a camera, declared AI-generated, edited, or unknown. |
 | 🌿 | **Calm** | No autoplay, still pages (no animations), optional grayscale and hidden vanity metrics. |
-| 💾 | **Retro looks** | Newsprint, Terminal, ’98 and **2000s Web 2.0** themes for any site. |
+| 💾 | **Two thoughtful looks** | Warm-paper **Calm reading** and glossy **2000s Web 2.0**, designed to preserve site navigation and controls. |
 
 No servers, no accounts, no analytics. Everything stays in your browser.
 

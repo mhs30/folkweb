@@ -1,14 +1,13 @@
 /* Shared base for every page theme. Each theme only sets the --fw-t-* palette (and adds its
-   own character); this file applies it so text always sits on the theme's own background,
-   even on sites with dark mode. Scoped to html[data-folkweb-theme]; loads nothing.
+   own character); this file applies the palette without changing page layout or flattening
+   site components. Scoped to html[data-folkweb-theme]; loads nothing.
 
    Palette: --fw-t-scheme, --fw-t-page (behind <body>), --fw-t-bg, --fw-t-surface (fields,
    code, panels), --fw-t-ink, --fw-t-heading-ink, --fw-t-muted, --fw-t-link, --fw-t-visited,
    --fw-t-line, --fw-t-select-bg, --fw-t-select-ink, --fw-t-font, --fw-t-heading, --fw-t-mono. */
 
-/* Themes win over these rules by repeating the same :not() chain (equal specificity, later in
-   the stylesheet). Note: on long pages <body> can be shorter than the content, so --fw-t-page
-   must keep text readable on its own. */
+/* Note: on long pages <body> can be shorter than the content, so --fw-t-page must keep text
+   readable on its own. */
 html[data-folkweb-theme] {
   color-scheme: var(--fw-t-scheme) !important;
   background: var(--fw-t-page) !important;
@@ -19,65 +18,50 @@ html[data-folkweb-theme] body {
   color: var(--fw-t-ink) !important;
 }
 
-/* No dark (or light) islands: layout boxes take the theme background. Background images,
-   icons and decorative elements are left alone so sprites and pictures keep working. */
-html[data-folkweb-theme] body :is(div, section, article, main, header, footer, nav, aside, ul, ol, li, dl, dd, dt, table, thead, tbody, tfoot, tr, td, th, form, fieldset, dialog, details, summary, p, blockquote, figure, figcaption, h1, h2, h3, h4, h5, h6, a, label, center, menu):not([aria-hidden="true"]):not([class*="icon" i]):not([role="img"]) {
-  background-color: transparent !important;
-  border-color: var(--fw-t-line) !important;
-  box-shadow: none !important;
-}
-
-/* Text */
-html[data-folkweb-theme] body :is(p, li, td, th, dd, dt, blockquote, figcaption, label, span, div, em, strong, b, i, u, small, sup, sub, time, cite, abbr, summary, legend, caption, section, article, main, header, footer, nav, aside):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]) {
+/* Recolour text, not its containers: site backgrounds, borders, shadows, list markers, and
+   positioning are part of the page's controls and navigation. Flattening them made sticky
+   headers, floating menus, and list-based layouts unreadable or visually broken. */
+html[data-folkweb-theme] body :is(p, li, td, th, dd, dt, blockquote, figcaption, label, span, em, strong, b, i, u, small, sup, sub, time, cite, abbr, summary, legend, caption):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]):not(nav *):not(header *):not([role="menu"] *):not([role="navigation"] *):not([role="dialog"] *):not([role="toolbar"] *):not(dialog *) {
   color: var(--fw-t-ink) !important;
   font-family: var(--fw-t-font) !important;
 }
-html[data-folkweb-theme] body :is(h1, h2, h3, h4, h5, h6):not([class*="icon" i]) {
+html[data-folkweb-theme] body :is(h1, h2, h3, h4, h5, h6):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]):not(nav *):not(header *):not([role="menu"] *):not([role="navigation"] *):not([role="dialog"] *):not([role="toolbar"] *):not(dialog *) {
   color: var(--fw-t-heading-ink) !important;
   font-family: var(--fw-t-heading) !important;
 }
-html[data-folkweb-theme] body :is(small, figcaption, time, cite):not([class*="icon" i]) {
+html[data-folkweb-theme] body :is(small, figcaption, time, cite):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]):not(nav *):not(header *):not([role="menu"] *):not([role="navigation"] *):not([role="dialog"] *):not([role="toolbar"] *):not(dialog *) {
   color: var(--fw-t-muted) !important;
 }
-html[data-folkweb-theme] body :is(code, pre, kbd, samp, tt) {
+html[data-folkweb-theme] body :is(code, pre, kbd, samp, tt):not(nav *):not(header *):not([role="menu"] *):not([role="navigation"] *):not([role="dialog"] *):not([role="toolbar"] *):not(dialog *) {
   font-family: var(--fw-t-mono) !important;
   color: var(--fw-t-ink) !important;
   background-color: var(--fw-t-surface) !important;
 }
-html[data-folkweb-theme] body :is(a, a *):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]) {
+html[data-folkweb-theme] body :is(a, a *):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]):not(nav *):not(header *):not([role="menu"] *):not([role="navigation"] *):not([role="dialog"] *):not([role="toolbar"] *):not(dialog *) {
   color: var(--fw-t-link) !important;
 }
-html[data-folkweb-theme] body :is(a:visited, a:visited *):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]) {
+html[data-folkweb-theme] body :is(a:visited, a:visited *):not([class*="icon" i]):not([class*="symbol" i]):not([aria-hidden="true"]):not(nav *):not(header *):not([role="menu"] *):not([role="navigation"] *):not([role="dialog"] *):not([role="toolbar"] *):not(dialog *) {
   color: var(--fw-t-visited) !important;
 }
 
 /* Controls */
-html[data-folkweb-theme] body :is(button, select, textarea, input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="image"], [type="file"])) {
+html[data-folkweb-theme] body :is(button, select, textarea, input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="image"], [type="file"])):not([class*="icon" i]):not([aria-hidden="true"]):not(nav *):not(header *):not([role="menu"] *):not([role="navigation"] *):not([role="dialog"] *):not([role="toolbar"] *):not(dialog *) {
   background-color: var(--fw-t-surface) !important;
-  background-image: none !important;
-  color: var(--fw-t-ink) !important;
-  border: 1px solid var(--fw-t-line) !important;
-  font-family: var(--fw-t-font) !important;
-}
-/* Pills and counters (often decorative spans with their own background) and custom buttons. */
-html[data-folkweb-theme] body :is([class*="counter" i], [class*="badge" i], [class*="pill" i], [role="button"]):not(img, svg, [class*="icon" i]) {
-  background-color: var(--fw-t-surface) !important;
-  background-image: none !important;
   color: var(--fw-t-ink) !important;
   border-color: var(--fw-t-line) !important;
-}
-html[data-folkweb-theme] body [role="button"] :is(span, div):not([class*="icon" i]):not([aria-hidden="true"]) {
-  background-color: transparent !important;
+  font-family: var(--fw-t-font) !important;
 }
 html[data-folkweb-theme] ::placeholder {
   color: var(--fw-t-muted) !important;
   opacity: 1 !important;
 }
-html[data-folkweb-theme] hr {
-  border-color: var(--fw-t-line) !important;
-  background-color: var(--fw-t-line) !important;
-}
 html[data-folkweb-theme] ::selection {
   background: var(--fw-t-select-bg) !important;
   color: var(--fw-t-select-ink) !important;
+}
+
+/* GitHub exposes its selected appearance on <html>. Keep themed text legible on its dark UI
+   without removing the site's own component surfaces. */
+html[data-folkweb-theme][data-color-mode="dark"] {
+  color-scheme: dark !important;
 }
