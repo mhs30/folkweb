@@ -10,14 +10,15 @@ if (!/^\d+\.\d+\.\d+$/.test(version)) {
   process.exit(1);
 }
 const changelog = readFileSync('CHANGELOG.md', 'utf8');
-const start = changelog.search(new RegExp(`^## \\[${version.replaceAll('.', '\\.')}\\]`, 'm'));
+const lines = changelog.split('\n');
+const heading = `## [${version}]`;
+const start = lines.findIndex((line) => line === heading || line.startsWith(`${heading} `));
 if (start < 0) {
   console.error(`CHANGELOG.md has no section for ${version}`);
   process.exit(1);
 }
-const rest = changelog.slice(start);
-const next = rest.slice(1).search(/^## \[/m);
-const section = (next < 0 ? rest : rest.slice(0, next + 1)).trim();
+const next = lines.findIndex((line, index) => index > start && line.startsWith('## ['));
+const section = lines.slice(start, next < 0 ? lines.length : next).join('\n').trim();
 
 console.log(`${section}
 
