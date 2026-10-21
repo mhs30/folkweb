@@ -38,49 +38,103 @@ const norm = text.replace(/\\\\/g, '/').replace(/\\/g, '/').toLowerCase();
 // Shell rules match the raw command line, not its JSON encoding. Git's global options
 // (`git -C dir -c k=v push`) are dropped first, so rules see `git push`.
 const rawCommand = typeof toolInput?.command === 'string' ? toolInput.command : typeof toolInput?.cmd === 'string' ? toolInput.cmd : text;
-function normalizeGitGlobalOptions(input) {
-  const matches = /\bgit\b/g;
-  const chunks = [];
-  let copiedThrough = 0;
-  let match;
-  while ((match = matches.exec(input)) !== null) {
-    let cursor = match.index + match[0].length;
-    let removedOption = false;
-    for (;;) {
-      while (/\s/.test(input[cursor] ?? '')) cursor++;
-      const tokenStart = cursor;
-      while (cursor < input.length && !/[\s;&|<>]/.test(input[cursor] ?? '')) cursor++;
-      const token = input.slice(tokenStart, cursor);
-      const [option = '', inlineValue] = token.split('=', 2);
-      if (/^--[a-z][\w-]*$/.test(option)) {
-        if (inlineValue === undefined && ['--git-dir', '--work-tree', '--namespace', '--exec-path', '--config-env'].includes(option)) {
-          while (/\s/.test(input[cursor] ?? '')) cursor++;
-          while (cursor < input.length && !/[\s;&|<>]/.test(input[cursor] ?? '')) cursor++;
-        }
-        removedOption = true;
-        continue;
-      }
-      if (/^-[a-z]+$/.test(option)) {
-        if (inlineValue === undefined && (option === '-c' || option === '-C')) {
-          while (/\s/.test(input[cursor] ?? '')) cursor++;
-          while (cursor < input.length && !/[\s;&|<>]/.test(input[cursor] ?? '')) cursor++;
-        }
-        removedOption = true;
-        continue;
-      }
-      cursor = tokenStart;
-      break;
+function tokenizeShell(input) {
+  const tokens = [];
+  const separators = ';|&<>()`\n';
+  let cursor = 0;
+  while (cursor < input.length) {
+    if (/\s/.test(input[cursor])) {
+      cursor++;
+      continue;
     }
-    if (removedOption && /[a-z]/i.test(input[cursor] ?? '')) {
-      chunks.push(input.slice(copiedThrough, match.index), 'git ');
-      copiedThrough = cursor;
-      matches.lastIndex = cursor;
+    const start = cursor;
+    if (separators.includes(input[cursor])) {
+      tokens.push({ start, end: ++cursor, value: '', separator: true });
+      continue;
     }
+
+    let value = '';
+    let quote = '';
+    while (cursor < input.length) {
+      const char = input[cursor];
+      if (quote) {
+        if (char === quote) {
+          quote = '';
+          cursor++;
+        } else if (char === '\\' && quote === '"' && cursor + 1 < input.length) {
+          value += input[cursor + 1];
+          cursor += 2;
+        } else {
+          value += char;
+          cursor++;
+        }
+      } else if (char === "'" || char === '"') {
+        quote = char;
+        cursor++;
+      } else if (char === '\\') {
+        if (cursor + 1 >= input.length) return null;
+        value += input[cursor + 1];
+        cursor += 2;
+      } else if (/\s/.test(char) || separators.includes(char)) {
+        break;
+      } else {
+        value += char;
+        cursor++;
+      }
+    }
+    if (quote) return null;
+    tokens.push({ start, end: cursor, value, separator: false });
   }
-  chunks.push(input.slice(copiedThrough));
-  return chunks.join('');
+  return tokens;
 }
-const command = normalizeGitGlobalOptions(rawCommand.toLowerCase());
+
+function isGitToken(token) {
+  return !token.separator && (token.value === 'git' || token.value.endsWith('/git'));
+}
+
+function isGitGlobalOption(value) {
+  if (/^--[a-z][\w-]*(?:=.*)?$/.test(value)) return true;
+  return /^-[a-z]+(?:=.*)?$/.test(value);
+}
+
+function takesSeparateValue(option) {
+  return ['--git-dir', '--work-tree', '--namespace', '--exec-path', '--config-env'].includes(option) || option === '-c';
+}
+
+function normalizeGitGlobalOptions(input) {
+  const tokens = tokenizeShell(input);
+  if (!tokens) return null;
+  const removed = [];
+
+  for (let i = 0; i < tokens.length; i++) {
+    if (!isGitToken(tokens[i])) continue;
+    let next = i + 1;
+    while (next < tokens.length && !tokens[next].separator) {
+      const token = tokens[next];
+      const [option = '', inlineValue] = token.value.split('=', 2);
+      if (!isGitGlobalOption(token.value)) break;
+
+      removed.push(token);
+      next++;
+      if (inlineValue === undefined && takesSeparateValue(option.toLowerCase())) {
+        while (next < tokens.length && !tokens[next].separator && tokens[next].value === '') next++;
+        if (next >= tokens.length || tokens[next].separator) break;
+        removed.push(tokens[next]);
+        next++;
+      }
+    }
+    i = next - 1;
+  }
+
+  if (removed.length === 0) return input;
+  const chars = input.split('');
+  for (const token of removed) {
+    for (let i = token.start; i < token.end; i++) chars[i] = ' ';
+  }
+  return chars.join('');
+}
+const normalizedCommand = normalizeGitGlobalOptions(rawCommand.toLowerCase());
+const command = normalizedCommand ?? rawCommand.toLowerCase();
 // Path arguments (view, grep, glob, edit, create…): not file contents or search patterns.
 const pathKeys = ['path', 'file_path', 'filePath', 'paths', 'filePaths', 'directory', 'source', 'destination', 'glob'];
 if (/glob|find/i.test(toolName)) pathKeys.push('pattern');
@@ -159,6 +213,7 @@ const SHELL_WRITES =
 
 function decide() {
   if (isShell) {
+    if (normalizedCommand === null) return ['ask', 'could not safely parse shell quoting; a human should check it.'];
     for (const [re, reason] of DENY_COMMANDS) if (re.test(command)) return ['deny', reason];
     for (const [re, reason] of ASK_COMMANDS) if (re.test(command)) return ['ask', reason];
     if (SHELL_WRITES.test(command)) {

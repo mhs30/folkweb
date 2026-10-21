@@ -163,6 +163,26 @@ describe('agent guard hook', () => {
       (cmd) => expect(decide(shell(cmd))).toBe('deny'),
     );
 
+    it.each([
+      "git -c 'foo.bar=one;two' push --force origin main",
+      "git --namespace 'one;two' push --force origin main",
+      'git -c foo.bar=one\\;two push --force origin main',
+      "git -C '/tmp/work;tree' checkout -- SECURITY.md",
+      'git --work-tree=/tmp/work\\;tree checkout -- SECURITY.md',
+    ])('parses delimiters inside Git option values: %s', (cmd) => {
+      expect(decide(shell(cmd))).toBe(cmd.includes('push') ? 'deny' : 'ask');
+    });
+
+    it.each([
+      ['git -c alias.x=one; git push --force origin main', 'deny'],
+      ['git -c alias.x=one; push --force origin main', null],
+      ['git -c alias.x=one && git checkout -- SECURITY.md', 'ask'],
+    ])('preserves real shell command boundaries: %s', (cmd, expected) => expect(decide(shell(cmd))).toBe(expected));
+
+    it('asks when shell quoting is malformed', () => {
+      expect(decide(shell("git -c 'unterminated; push --force"))).toBe('ask');
+    });
+
     it('handles long runs of git options without regex backtracking', () => {
       const options = Array.from({ length: 100 }, () => '-c -a').join(' ');
       const r = spawnSync(process.execPath, [GUARD], {
@@ -173,6 +193,21 @@ describe('agent guard hook', () => {
       expect(r.error).toBeUndefined();
       expect(r.status).toBe(0);
       expect(JSON.parse(r.stdout).hookSpecificOutput.permissionDecision).toBe('deny');
+    });
+
+    it.each([
+      `git ${Array.from({ length: 2000 }, () => '-c alias.x=git').join(' ')}`,
+      `git ${Array.from({ length: 2000 }, () => '--namespace=git').join(' ')}`,
+      `echo ${'git-'.repeat(5000)}`,
+    ])('scans unsuccessful Git normalization in linear time: %s', (cmd) => {
+      const r = spawnSync(process.execPath, [GUARD], {
+        input: JSON.stringify(shell(cmd)),
+        encoding: 'utf8',
+        timeout: 2000,
+      });
+      expect(r.error).toBeUndefined();
+      expect(r.status).toBe(0);
+      expect(r.stdout.trim()).toBe('');
     });
 
     it.each(['gh release create v0.2.0 x.zip', 'gh release upload v0.2.0 x.zip', 'git tag v0.2.0', 'git tag -s v0.2.0 -m x', 'git push origin v0.2.0', 'gh pr merge 12 --admin'])(
