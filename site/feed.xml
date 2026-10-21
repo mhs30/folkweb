@@ -6,7 +6,14 @@
     <atom:link href="https://folkweb.org/feed.xml" rel="self" type="application/rss+xml" />
     <description>News about Folkweb, the browser extension for a web made by people.</description>
     <language>en</language>
-    <lastBuildDate>Wed, 14 Oct 2026 12:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 21 Oct 2026 12:00:00 +0200</lastBuildDate>
+    <item>
+      <title>Folkweb is available for Firefox</title>
+      <link>https://folkweb.org/news/</link>
+      <guid isPermaLink="false">folkweb-2026-10-21-firefox-release</guid>
+      <pubDate>Wed, 21 Oct 2026 12:00:00 +0200</pubDate>
+      <description>Folkweb 0.2.0 is approved on Firefox Add-ons for desktop Firefox. The Chrome Web Store submission is still under review; Firefox for Android is not supported yet.</description>
+    </item>
     <item>
       <title>You can now support Folkweb</title>
       <link>https://folkweb.org/support/</link>
