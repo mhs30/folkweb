@@ -38,8 +38,49 @@ const norm = text.replace(/\\\\/g, '/').replace(/\\/g, '/').toLowerCase();
 // Shell rules match the raw command line, not its JSON encoding. Git's global options
 // (`git -C dir -c k=v push`) are dropped first, so rules see `git push`.
 const rawCommand = typeof toolInput?.command === 'string' ? toolInput.command : typeof toolInput?.cmd === 'string' ? toolInput.cmd : text;
-const GIT_GLOBAL_OPTIONS = /\bgit((?:\s+(?:-c|--git-dir|--work-tree|--namespace|--exec-path|--config-env)(?:=\S+|\s+\S+)|\s+--[a-z][\w-]*|\s+-[a-z]+))+\s+(?=[a-z])/g;
-const command = rawCommand.toLowerCase().replace(GIT_GLOBAL_OPTIONS, 'git ');
+function normalizeGitGlobalOptions(input) {
+  const matches = /\bgit\b/g;
+  const chunks = [];
+  let copiedThrough = 0;
+  let match;
+  while ((match = matches.exec(input)) !== null) {
+    let cursor = match.index + match[0].length;
+    let removedOption = false;
+    for (;;) {
+      while (/\s/.test(input[cursor] ?? '')) cursor++;
+      const tokenStart = cursor;
+      while (cursor < input.length && !/[\s;&|<>]/.test(input[cursor] ?? '')) cursor++;
+      const token = input.slice(tokenStart, cursor);
+      const [option = '', inlineValue] = token.split('=', 2);
+      if (/^--[a-z][\w-]*$/.test(option)) {
+        if (inlineValue === undefined && ['--git-dir', '--work-tree', '--namespace', '--exec-path', '--config-env'].includes(option)) {
+          while (/\s/.test(input[cursor] ?? '')) cursor++;
+          while (cursor < input.length && !/[\s;&|<>]/.test(input[cursor] ?? '')) cursor++;
+        }
+        removedOption = true;
+        continue;
+      }
+      if (/^-[a-z]+$/.test(option)) {
+        if (inlineValue === undefined && (option === '-c' || option === '-C')) {
+          while (/\s/.test(input[cursor] ?? '')) cursor++;
+          while (cursor < input.length && !/[\s;&|<>]/.test(input[cursor] ?? '')) cursor++;
+        }
+        removedOption = true;
+        continue;
+      }
+      cursor = tokenStart;
+      break;
+    }
+    if (removedOption && /[a-z]/i.test(input[cursor] ?? '')) {
+      chunks.push(input.slice(copiedThrough, match.index), 'git ');
+      copiedThrough = cursor;
+      matches.lastIndex = cursor;
+    }
+  }
+  chunks.push(input.slice(copiedThrough));
+  return chunks.join('');
+}
+const command = normalizeGitGlobalOptions(rawCommand.toLowerCase());
 // Path arguments (view, grep, glob, edit, create…): not file contents or search patterns.
 const pathKeys = ['path', 'file_path', 'filePath', 'paths', 'filePaths', 'directory', 'source', 'destination', 'glob'];
 if (/glob|find/i.test(toolName)) pathKeys.push('pattern');

@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -34,5 +34,20 @@ describe('security scan: maintainer-only material stays out of the public reposi
 
   it('accepts ordinary public files', () => {
     expect(scan({ 'README.md': '# Folkweb', 'docs/RELEASING.md': 'How releases are built', 'SECURITY.md': 'maintainer review' })).toBe('');
+  });
+
+  it('does not follow symlinked files or directories', () => {
+    dir = mkdtempSync(join(tmpdir(), 'folkweb-scan-'));
+    const root = join(dir, 'root');
+    const outside = join(dir, 'outside');
+    mkdirSync(join(root, 'docs'), { recursive: true });
+    mkdirSync(outside);
+    writeFileSync(join(outside, 'private.md'), `<!-- ${MARKER} -->`);
+    symlinkSync(join(outside, 'private.md'), join(root, 'docs', 'linked.md'));
+    symlinkSync(outside, join(root, 'linked-directory'));
+    const r = spawnSync(process.execPath, [SCAN, root], { encoding: 'utf8' });
+    expect(r.status).toBe(0);
+    expect(r.stderr).toBe('');
+    expect(r.stdout).toContain('✓ no maintainer-only material');
   });
 });

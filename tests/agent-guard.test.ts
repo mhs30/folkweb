@@ -163,6 +163,18 @@ describe('agent guard hook', () => {
       (cmd) => expect(decide(shell(cmd))).toBe('deny'),
     );
 
+    it('handles long runs of git options without regex backtracking', () => {
+      const options = Array.from({ length: 100 }, () => '-c -a').join(' ');
+      const r = spawnSync(process.execPath, [GUARD], {
+        input: JSON.stringify(shell(`git ${options} push --force origin main`)),
+        encoding: 'utf8',
+        timeout: 2000,
+      });
+      expect(r.error).toBeUndefined();
+      expect(r.status).toBe(0);
+      expect(JSON.parse(r.stdout).hookSpecificOutput.permissionDecision).toBe('deny');
+    });
+
     it.each(['gh release create v0.2.0 x.zip', 'gh release upload v0.2.0 x.zip', 'git tag v0.2.0', 'git tag -s v0.2.0 -m x', 'git push origin v0.2.0', 'gh pr merge 12 --admin'])(
       'denies releases, tags and rule bypasses: %s',
       (cmd) => expect(decide(shell(cmd))).toBe('deny'),
