@@ -1,4 +1,4 @@
-/* Newsprint — warm paper, serif type, ink-coloured links. Calm reading. */
+/* Calm reading — warm paper and a quiet serif face. */
 html[data-folkweb-theme="newsprint"] {
   --fw-t-scheme: light;
   --fw-t-page: #f5f0e6;
@@ -16,23 +16,50 @@ html[data-folkweb-theme="newsprint"] {
   --fw-t-heading: "Iowan Old Style", "Palatino Linotype", Charter, Georgia, serif;
   --fw-t-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
-html[data-folkweb-theme="newsprint"] body :is(p, li, blockquote, dd) {
+html[data-folkweb-theme="newsprint"][data-color-mode="dark"] {
+  --fw-t-scheme: dark;
+  --fw-t-page: #171512;
+  --fw-t-bg: #211d18;
+  --fw-t-surface: #2c2720;
+  --fw-t-ink: #f5f0e6;
+  --fw-t-heading-ink: #fff9eb;
+  --fw-t-muted: #d1c6b4;
+  --fw-t-link: #a8c7ff;
+  --fw-t-visited: #d6a8f5;
+  --fw-t-line: #5c5448;
+  --fw-t-select-bg: #5c442b;
+  --fw-t-select-ink: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  html[data-folkweb-theme="newsprint"][data-color-mode="auto"] {
+    --fw-t-scheme: dark;
+    --fw-t-page: #171512;
+    --fw-t-bg: #211d18;
+    --fw-t-surface: #2c2720;
+    --fw-t-ink: #f5f0e6;
+    --fw-t-heading-ink: #fff9eb;
+    --fw-t-muted: #d1c6b4;
+    --fw-t-link: #a8c7ff;
+    --fw-t-visited: #d6a8f5;
+    --fw-t-line: #5c5448;
+    --fw-t-select-bg: #5c442b;
+    --fw-t-select-ink: #ffffff;
+  }
+}
+html[data-folkweb-theme="newsprint"] body :is(p, blockquote, dd):not(nav *):not(header *) {
   line-height: 1.6 !important;
 }
-html[data-folkweb-theme="newsprint"] body :is(h1, h2, h3) {
+html[data-folkweb-theme="newsprint"] body :is(h1, h2, h3):not(nav *):not(header *) {
   letter-spacing: -0.01em !important;
 }
-html[data-folkweb-theme="newsprint"] body a {
+html[data-folkweb-theme="newsprint"] body a:not(nav *):not(header *) {
   text-decoration-thickness: 1px !important;
   text-underline-offset: 2px !important;
 }
-html[data-folkweb-theme="newsprint"] body blockquote {
+html[data-folkweb-theme="newsprint"] body blockquote:not(nav *):not(header *) {
   border-left: 3px solid var(--fw-t-line) !important;
   font-style: italic !important;
 }
-html[data-folkweb-theme="newsprint"] body :is(button, select, textarea, input) {
+html[data-folkweb-theme="newsprint"] body :is(button, select, textarea, input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="image"], [type="file"])):not(nav *):not(header *):not([role="menu"] *):not([role="dialog"] *):not(dialog *) {
   border-radius: 3px !important;
-}
-html[data-folkweb-theme="newsprint"] img {
-  filter: sepia(0.12) saturate(0.9) !important;
 }

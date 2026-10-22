@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { isFromThisExtension, isGetSignalsMessage, isOpenBlockedMessage } from '../src/lib/messages';
 import { adapterFor, googleWebOnlyUrl, hostFromCite, isGoogleSearchHost } from '../src/lib/search';
-import { DEFAULT_SETTINGS, sanitizeSettings } from '../src/lib/settings';
+import { DEFAULT_SETTINGS, sanitizeSettings, THEMES } from '../src/lib/settings';
 
 describe('settings', () => {
+  it('offers only the two supported looks and the off option', () => {
+    expect(THEMES).toEqual(['none', 'newsprint', 'y2k']);
+  });
+
   it('falls back to defaults for garbage', () => {
     expect(sanitizeSettings(null)).toEqual(DEFAULT_SETTINGS);
     expect(sanitizeSettings('x')).toEqual(DEFAULT_SETTINGS);

@@ -1,13 +1,11 @@
 import { sanitizeDomainInput } from './domains';
 
-export const THEMES = ['none', 'newsprint', 'terminal', 'win98', 'y2k'] as const;
+export const THEMES = ['none', 'newsprint', 'y2k'] as const;
 export type ThemeId = (typeof THEMES)[number];
 
 export const THEME_LABELS: Record<ThemeId, string> = {
   none: 'Off — site’s own look',
-  newsprint: 'Newsprint (calm reading)',
-  terminal: 'Terminal (green screen)',
-  win98: '’98 (desktop classic)',
+  newsprint: 'Calm reading (warm paper)',
   y2k: '2000s Web 2.0 (glossy)',
 };
 

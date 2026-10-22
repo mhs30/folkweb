@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" data-color-mode="light">
+  <head>
+    <meta charset="utf-8" />
+    <title>Theme layout fixture</title>
+    <style>
+      body { margin: 0; color: #111; font: 16px Arial, sans-serif; }
+      main { padding: 64px 24px 24px; }
+      header { position: fixed; inset: 0 0 auto; z-index: 10; background: #26384a; color: white; box-shadow: 0 2px 8px #0008; }
+      header a { color: white; }
+      nav { display: flex; gap: 16px; }
+      #menu { position: fixed; top: 48px; right: 12px; background: #e7edf2; box-shadow: 0 4px 12px #0006; }
+      aside { float: right; width: 180px; background: #eef2f6; }
+      ul { list-style: square; }
+      li { background: #f0f0f0; }
+      html[data-color-mode="dark"] #menu,
+      html[data-color-mode="dark"] aside,
+      html[data-color-mode="dark"] li { background: #1c3150; color: #f1f6ff; }
+      .icon { font-family: monospace; }
+    </style>
+  </head>
+  <body>
+    <header id="sticky"><nav aria-label="Main navigation"><a href="/">Home</a><a href="/about">About</a></nav></header>
+    <div id="menu" role="menu">Floating menu <a href="/help">Help</a></div>
+    <main>
+      <h1>Page heading</h1>
+      <p id="copy">A paragraph of reading text.</p>
+      <span id="icon" class="icon" aria-hidden="true">★</span>
+      <aside id="floating-list"><ul id="list"><li id="list-item">A list item</li></ul></aside>
+      <img id="avatar" alt="Avatar" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" />
+    </main>
+  </body>
+</html>
