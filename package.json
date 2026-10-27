@@ -39,6 +39,6 @@
     "wxt": "0.21.4"
   },
   "dependencies": {
-    "@contentauth/c2pa-wasm": "0.13.2"
+    "@contentauth/c2pa-wasm": "0.13.3"
   }
 }
